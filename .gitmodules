@@ -7,9 +7,6 @@
 [submodule "jump-the-car"]
 	path = jump-the-car
 	url = git@github-personal:cmlozanos/jump-the-car.git
-[submodule "quasar-firebase-memory-cards"]
-	path = quasar-firebase-memory-cards
-	url = git@github-personal:cmlozanos/quasar-firebase-memory-cards.git
 [submodule "world-of-joy"]
 	path = world-of-joy
 	url = git@github-personal:cmlozanos/world-of-joy.git
