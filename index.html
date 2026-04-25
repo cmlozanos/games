@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 Games - cmlozanos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    header h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      background: linear-gradient(90deg, #f9ca24, #f0932b, #eb4d4b, #6ab04c, #22a6b3);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: rainbow 4s linear infinite;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      color: #a0aec0;
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+    }
+
+    @keyframes rainbow {
+      0%   { background-position: 0% }
+      100% { background-position: 200% }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      backdrop-filter: blur(6px);
+    }
+
+    .card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .card .emoji {
+      font-size: 3.5rem;
+      line-height: 1;
+    }
+
+    .card h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      letter-spacing: 0.5px;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: #cbd5e0;
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      align-self: center;
+    }
+
+    /* per-card accent colours */
+    .card--banana  { border-color: rgba(249, 202, 36, 0.4); }
+    .card--banana:hover  { box-shadow: 0 16px 40px rgba(249,202,36,0.2); }
+    .card--banana .badge { background: rgba(249,202,36,0.25); color: #f9ca24; }
+
+    .card--kart    { border-color: rgba(235, 77, 75, 0.4); }
+    .card--kart:hover    { box-shadow: 0 16px 40px rgba(235,77,75,0.2); }
+    .card--kart .badge { background: rgba(235,77,75,0.25); color: #eb4d4b; }
+
+    .card--jump    { border-color: rgba(255, 215, 0, 0.4); }
+    .card--jump:hover    { box-shadow: 0 16px 40px rgba(255,215,0,0.2); }
+    .card--jump .badge { background: rgba(255,215,0,0.25); color: #ffd700; }
+
+    .card--world   { border-color: rgba(106, 176, 76, 0.4); }
+    .card--world:hover   { box-shadow: 0 16px 40px rgba(106,176,76,0.2); }
+    .card--world .badge { background: rgba(106,176,76,0.25); color: #6ab04c; }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: #4a5568;
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: #718096;
+      text-decoration: none;
+    }
+
+    footer a:hover { color: #a0aec0; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎮 Games</h1>
+    <p>Elige un juego y a jugar</p>
+  </header>
+
+  <main class="grid">
+
+    <a class="card card--banana" href="https://cmlozanos.github.io/banana-party/" target="_blank" rel="noopener">
+      <span class="emoji">🐵</span>
+      <h2>Banana Party</h2>
+      <p>¡Ayuda al mono a recoger todas las bananas de la montaña!</p>
+      <span class="badge">Plataformas</span>
+    </a>
+
+    <a class="card card--kart" href="https://cmlozanos.github.io/fancy-jumping-car/" target="_blank" rel="noopener">
+      <span class="emoji">🏎️</span>
+      <h2>Super Kart Racing</h2>
+      <p>Elige tu personaje y compite en emocionantes carreras 3D.</p>
+      <span class="badge">Carreras</span>
+    </a>
+
+    <a class="card card--jump" href="https://cmlozanos.github.io/jump-the-car/" target="_blank" rel="noopener">
+      <span class="emoji">🚗</span>
+      <h2>Jump the Car</h2>
+      <p>Juego educativo para niños: ¡salta los obstáculos y llega a la meta!</p>
+      <span class="badge">Educativo · PWA</span>
+    </a>
+
+    <a class="card card--world" href="https://cmlozanos.github.io/world-of-joy/" target="_blank" rel="noopener">
+      <span class="emoji">🌍</span>
+      <h2>World of Joy</h2>
+      <p>Explora el mundo abierto, forma palabras y conduce en modo racing.</p>
+      <span class="badge">Aventura · PWA</span>
+    </a>
+
+  </main>
+
+  <footer>
+    <p><a href="https://github.com/cmlozanos" target="_blank" rel="noopener">github.com/cmlozanos</a></p>
+  </footer>
+
+</body>
+</html>
