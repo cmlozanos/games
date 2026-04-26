@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260426-freeze-fix-1">
   <title>Little Chef Academy</title>
 </head>
 <body>
@@ -35,6 +35,26 @@
 
       <section class="mode-panel" aria-labelledby="mode-title">
         <h2 id="mode-title" data-i18n="chooseMode">Elige una misión</h2>
+        <div class="character-panel" aria-label="Character selector">
+          <h3 data-i18n="chooseCharacter">Elige tu chef</h3>
+          <div class="character-grid">
+            <button class="character-card" type="button" data-character="pepper">
+              <span class="character-avatar character-avatar--pepper" aria-hidden="true"></span>
+              <strong data-i18n="pepperChef">Pepper Chef</strong>
+              <span data-i18n="pepperChefDescription">Rápido, alegre y experto en sopas.</span>
+            </button>
+            <button class="character-card" type="button" data-character="mint">
+              <span class="character-avatar character-avatar--mint" aria-hidden="true"></span>
+              <strong data-i18n="mintChef">Mint Chef</strong>
+              <span data-i18n="mintChefDescription">Tranquilo, preciso y muy bueno con números.</span>
+            </button>
+            <button class="character-card" type="button" data-character="berry">
+              <span class="character-avatar character-avatar--berry" aria-hidden="true"></span>
+              <strong data-i18n="berryChef">Berry Chef</strong>
+              <span data-i18n="berryChefDescription">Creativa, curiosa y fan de los colores.</span>
+            </button>
+          </div>
+        </div>
         <div class="mode-grid">
           <button class="mode-card" data-mode="word" type="button">
             <span class="mode-emoji">🔤</span>
@@ -75,7 +95,7 @@
         <p id="feedback-label"></p>
       </div>
 
-      <canvas id="game-canvas" width="960" height="620" aria-label="Little Chef Academy game"></canvas>
+      <canvas id="game-canvas" aria-label="Little Chef Academy 3D game"></canvas>
 
       <div class="touch-controls" aria-label="Touch controls">
         <button data-direction="up" type="button">▲</button>
@@ -106,13 +126,22 @@
     </section>
   </main>
 
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
+        navigator.serviceWorker.register('./sw.js?v=20260426-freeze-fix-1').then((registration) => {
+          registration.update();
+        }).catch(() => {});
       });
     }
   </script>
-  <script type="module" src="src/main.js"></script>
+  <script type="module" src="src/main.js?v=20260426-freeze-fix-1"></script>
 </body>
 </html>
