@@ -97,7 +97,6 @@ renderer.toneMappingExposure = 1.08;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xfff1d6);
-scene.fog = new THREE.Fog(0xfff1d6, 13, 22);
 
 const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
 camera.position.set(0, 9.0, 13.0);
@@ -1028,7 +1027,7 @@ function createItemMeshes() {
   clearItems();
   state.items.forEach((item) => {
     const group = new THREE.Group();
-    group.position.set(item.x, 0.7, item.z);
+    group.position.set(item.x, 1.55, item.z);  // raise above counters (top ~1.02)
     group.userData.meshId = item.meshId;
 
     const color = new THREE.Color(COLORS[item.color] || '#38bdf8');
@@ -1057,11 +1056,15 @@ function createItemMeshes() {
     );
     label.position.y = 0.18;
     label.scale.set(1.9, 1.9, 1.9);
+    label.material.depthTest = false;
+    label.renderOrder = 10;
     group.add(label);
 
     const arrow = createTextSprite('↓', 96, COLORS[item.color] || '#111827', 'rgba(255,255,255,0)');
     arrow.position.y = 1.65;
     arrow.scale.set(0.45, 0.45, 0.45);
+    arrow.material.depthTest = false;
+    arrow.renderOrder = 10;
     group.add(arrow);
 
     const light = new THREE.PointLight(color, 1.3, 3.4, 2.2);

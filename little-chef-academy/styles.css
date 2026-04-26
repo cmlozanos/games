@@ -208,24 +208,64 @@ h1 {
 }
 
 .character-avatar {
-  width: 3.35rem;
-  height: 3.35rem;
-  border-radius: 50% 50% 44% 44%;
-  border: 5px solid #fff;
-  box-shadow: inset 0 -10px 16px rgba(0, 0, 0, 0.13), 0 8px 18px rgba(124, 45, 18, 0.16);
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  position: relative;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.6rem;
+  background: #f7c59f;
+  flex-shrink: 0;
 }
 
-.character-avatar--pepper {
-  background: linear-gradient(145deg, #22c55e 0 38%, #f7c59f 39% 64%, #f97316 65% 100%);
+/* Cap on top using ::before, shirt using ::after */
+.character-avatar::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4.4rem;
+  height: 1.6rem;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  z-index: 2;
 }
 
+.character-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4rem;
+  height: 1.4rem;
+  border-radius: 0 0 1rem 1rem;
+  z-index: 2;
+}
+
+.character-avatar--pepper { background: radial-gradient(ellipse at 50% 60%, #f7c59f 55%, #f7c59f 100%); }
+.character-avatar--pepper::before { background: #22c55e; }
+.character-avatar--pepper::after  { background: #f97316; }
+.character-avatar--pepper .face { content: '\1F9D4'; }
+
+/* Mint: blue cap, green shirt */
 .character-avatar--mint {
-  background: linear-gradient(145deg, #0ea5e9 0 38%, #f7c59f 39% 64%, #22c55e 65% 100%);
+  background: radial-gradient(ellipse at 50% 60%, #f7c59f 55%, #f7c59f 100%);
 }
+.character-avatar--mint::before { background: #0ea5e9; }
+.character-avatar--mint::after  { background: #22c55e; }
 
+/* Berry: purple cap, pink shirt */
 .character-avatar--berry {
-  background: linear-gradient(145deg, #a855f7 0 38%, #f7c59f 39% 64%, #ec4899 65% 100%);
+  background: radial-gradient(ellipse at 50% 60%, #f7c59f 55%, #f7c59f 100%);
 }
+.character-avatar--berry::before { background: #a855f7; }
+.character-avatar--berry::after  { background: #ec4899; }
 
 .mode-grid {
   display: grid;
@@ -529,8 +569,9 @@ h1 {
 
   .character-avatar {
     grid-row: span 2;
-    width: 2.7rem;
-    height: 2.7rem;
+    width: 4rem;
+    height: 4rem;
+    font-size: 2rem;
   }
 
   .mode-card {
