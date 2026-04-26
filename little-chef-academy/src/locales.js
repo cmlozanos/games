@@ -15,11 +15,15 @@ export const LOCALES = {
     mintChefDescription: 'Tranquilo, preciso y muy bueno con números.',
     berryChefDescription: 'Creativa, curiosa y fan de los colores.',
     wordMode: 'Palabras',
-    wordModeDescription: 'Recoge letras en orden para formar la receta.',
+    wordModeDescription: 'Recoge letras en orden para formar la palabra.',
     countMode: 'Números',
     countModeDescription: 'Busca la cantidad correcta de ingredientes.',
     colorMode: 'Colores',
     colorModeDescription: 'Encuentra ingredientes del color pedido.',
+    recipeMode: 'Receta',
+    recipeModeDescription: 'Recoge todos los ingredientes de la receta en cualquier orden.',
+    mathMode: 'Matemáticas',
+    mathModeDescription: 'Resuelve la suma y recoge esa cantidad de ingredientes.',
     recipeBook: 'Recetario',
     round: 'Receta',
     score: 'Estrellas',
@@ -49,9 +53,11 @@ export const LOCALES = {
       'Buen intento. Ahora toca {target}.',
       'Prueba otra vez con {target}.'
     ],
-    wordInstruction: 'Forma la palabra {word}. Busca: {target}',
+    wordInstruction: 'Forma la palabra {word}. Busca la letra: {target}',
     countInstruction: 'Añade {count} {ingredient}. Llevas {current}.',
     colorInstruction: 'Busca ingredientes de color {color}. Llevas {current}/{count}.',
+    recipeInstruction: 'Prepara {name}. Recoge: {remaining}',
+    mathInstruction: '{a} + {b} = ? Añade {total} {ingredient}. Llevas {current}.',
     colorNames: {
       red: 'rojo',
       yellow: 'amarillo',
@@ -72,7 +78,13 @@ export const LOCALES = {
       egg: 'huevo',
       lettuce: 'lechuga',
       blueberry: 'arándano',
-      orange: 'naranja'
+      orange: 'naranja',
+      strawberry: 'fresa',
+      corn: 'maíz',
+      mushroom: 'champiñón',
+      watermelon: 'sandía',
+      broccoli: 'brócoli',
+      pear: 'pera'
     },
     recipeNames: {
       soup: 'sopa feliz',
@@ -80,7 +92,9 @@ export const LOCALES = {
       salad: 'ensalada arcoíris',
       cake: 'tarta dulce',
       juice: 'zumo mágico',
-      sandwich: 'bocadillo sonriente'
+      sandwich: 'bocadillo sonriente',
+      pizza: 'pizza estrella',
+      smoothie: 'batido feliz'
     }
   },
   en: {
@@ -99,11 +113,15 @@ export const LOCALES = {
     mintChefDescription: 'Calm, precise, and very good with numbers.',
     berryChefDescription: 'Creative, curious, and a fan of colors.',
     wordMode: 'Words',
-    wordModeDescription: 'Collect letters in order to build the recipe.',
+    wordModeDescription: 'Collect letters in order to build the word.',
     countMode: 'Numbers',
     countModeDescription: 'Find the right amount of each ingredient.',
     colorMode: 'Colors',
     colorModeDescription: 'Pick ingredients with the requested color.',
+    recipeMode: 'Recipe',
+    recipeModeDescription: 'Collect all the recipe ingredients in any order.',
+    mathMode: 'Maths',
+    mathModeDescription: 'Solve the addition and collect that many ingredients.',
     recipeBook: 'Recipe Book',
     round: 'Recipe',
     score: 'Stars',
@@ -133,9 +151,11 @@ export const LOCALES = {
       'Good try. Now pick {target}.',
       'Try again with {target}.'
     ],
-    wordInstruction: 'Build the word {word}. Find: {target}',
+    wordInstruction: 'Build the word {word}. Find the letter: {target}',
     countInstruction: 'Add {count} {ingredient}. You have {current}.',
     colorInstruction: 'Find {color} ingredients. You have {current}/{count}.',
+    recipeInstruction: 'Cook {name}. Collect: {remaining}',
+    mathInstruction: '{a} + {b} = ? Add {total} {ingredient}. You have {current}.',
     colorNames: {
       red: 'red',
       yellow: 'yellow',
@@ -156,7 +176,13 @@ export const LOCALES = {
       egg: 'egg',
       lettuce: 'lettuce',
       blueberry: 'blueberry',
-      orange: 'orange'
+      orange: 'orange',
+      strawberry: 'strawberry',
+      corn: 'corn',
+      mushroom: 'mushroom',
+      watermelon: 'watermelon',
+      broccoli: 'broccoli',
+      pear: 'pear'
     },
     recipeNames: {
       soup: 'happy soup',
@@ -164,7 +190,9 @@ export const LOCALES = {
       salad: 'rainbow salad',
       cake: 'sweet cake',
       juice: 'magic juice',
-      sandwich: 'smiling sandwich'
+      sandwich: 'smiling sandwich',
+      pizza: 'star pizza',
+      smoothie: 'happy smoothie'
     }
   }
 };

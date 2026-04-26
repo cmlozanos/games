@@ -3,8 +3,8 @@ import { translate } from './locales.js';
 import { COLORS, INGREDIENTS, RECIPES } from './recipes.js';
 
 const STORAGE_KEY = 'littleChefAcademyState';
-const WORLD_LIMIT_X = 10.2;
-const WORLD_LIMIT_Z = 6.3;
+const WORLD_LIMIT_X = 14.0;
+const WORLD_LIMIT_Z = 9.5;
 const PLAYER_RADIUS = 0.42;
 const ITEM_RADIUS = 0.72;
 
@@ -84,6 +84,7 @@ const state = {
   particles: [],
   tosses: [],
   collectionCooldown: 0,
+  collectedIngredientIds: new Set(),
   feedback: ''
 };
 
@@ -98,8 +99,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xfff1d6);
 scene.fog = new THREE.Fog(0xfff1d6, 13, 22);
 
-const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 80);
-camera.position.set(0, 6.8, 9.5);
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+camera.position.set(0, 9.0, 13.0);
 camera.lookAt(0, 0.5, 0);
 
 const world = new THREE.Group();
@@ -227,9 +228,10 @@ function startRound() {
   state.completed = false;
   state.collectedCount = 0;
   state.expectedIndex = 0;
+  state.collectedIngredientIds = new Set();
   state.feedback = '';
   state.player.x = 0;
-  state.player.z = 4.9;
+  state.player.z = 8.5;
   clearItems();
   state.items = createRoundItems(getCurrentRecipe());
   createItemMeshes();
@@ -379,9 +381,9 @@ function updateTosses(delta) {
 }
 
 function updateCamera(delta) {
-  const target = new THREE.Vector3(state.player.x * 0.32, 6.4, state.player.z + 8.8);
+  const target = new THREE.Vector3(state.player.x * 0.28, 8.5, state.player.z + 11.5);
   camera.position.lerp(target, Math.min(delta * 2.3, 1));
-  camera.lookAt(state.player.x * 0.2, 0.75, state.player.z - 1.2);
+  camera.lookAt(state.player.x * 0.2, 0.5, state.player.z - 1.5);
 }
 
 function updateSteam(elapsed) {
@@ -424,6 +426,7 @@ function collectItem(entry, position) {
   item.collected = true;
   state.collectedCount += 1;
   if (state.mode === 'word') state.expectedIndex += 1;
+  if (state.mode === 'recipe') state.collectedIngredientIds.add(item.id);
   hideItemMesh(item);
   spawnSparkles(position, expected.color);
   tossToPot(position, expected.color);
@@ -495,8 +498,8 @@ function createMaterials() {
 
 function buildKitchen() {
   const floor = new THREE.Group();
-  for (let x = -11; x < 11; x += 1) {
-    for (let z = -7; z < 7; z += 1) {
+  for (let x = -15; x < 15; x += 1) {
+    for (let z = -11; z < 11; z += 1) {
       const tile = new THREE.Mesh(new THREE.BoxGeometry(0.98, 0.04, 0.98), (x + z) % 2 === 0 ? materials.floorA : materials.floorB);
       tile.position.set(x + 0.5, -0.02, z + 0.5);
       tile.receiveShadow = true;
@@ -505,28 +508,73 @@ function buildKitchen() {
   }
   world.add(floor);
 
-  const backWall = new THREE.Mesh(new THREE.BoxGeometry(22.5, 5, 0.25), materials.wall);
-  backWall.position.set(0, 2.45, -7.15);
+  // Back wall
+  const backWall = new THREE.Mesh(new THREE.BoxGeometry(30, 5.5, 0.25), materials.wall);
+  backWall.position.set(0, 2.75, -10.15);
   backWall.receiveShadow = true;
   world.add(backWall);
-  addObstacleBox(0, -7.15, 22.5, 0.3, 0.12);
+  addObstacleBox(0, -10.15, 30, 0.3, 0.12);
 
-  const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.25, 5, 14.5), materials.wall);
-  leftWall.position.set(-8.6, 2.45, 0);
+  // Left wall
+  const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.25, 5.5, 22), materials.wall);
+  leftWall.position.set(-14.15, 2.75, 0);
   leftWall.receiveShadow = true;
   world.add(leftWall);
-  leftWall.position.x = -10.9;
-  addObstacleBox(-10.9, 0, 0.3, 14.5, 0.12);
+  addObstacleBox(-14.15, 0, 0.3, 22, 0.12);
 
+  // Right wall
   const rightWall = leftWall.clone();
-  rightWall.position.x = 10.9;
+  rightWall.position.x = 14.15;
   world.add(rightWall);
-  addObstacleBox(10.9, 0, 0.3, 14.5, 0.12);
+  addObstacleBox(14.15, 0, 0.3, 22, 0.12);
 
-  createCounter(0, -6.15, 17.5, 1.0);
-  createCounter(-9.35, -1.35, 1.0, 7.3);
-  createCounter(9.35, -1.35, 1.0, 7.3);
-  createIsland(0, -0.15);
+  // Back wall counter (full width)
+  createCounter(0, -9.15, 26, 1.0);
+
+  // Left side counter
+  createCounter(-12.4, -2.5, 1.0, 13);
+
+  // Right side counter
+  createCounter(12.4, -2.5, 1.0, 13);
+
+  // Pantry divider — creates a sheltered alcove on the back left
+  const pantryDiv = new THREE.Mesh(new THREE.BoxGeometry(4.8, 2.4, 0.3), materials.wood);
+  pantryDiv.position.set(-9.8, 1.2, -5.5);
+  pantryDiv.castShadow = true;
+  world.add(pantryDiv);
+  addObstacleBox(-9.8, -5.5, 4.8, 0.4, 0.18);
+
+  // Prep area divider — symmetrical on the right
+  const prepDiv = new THREE.Mesh(new THREE.BoxGeometry(4.8, 2.4, 0.3), materials.wood);
+  prepDiv.position.set(9.8, 1.2, -5.5);
+  prepDiv.castShadow = true;
+  world.add(prepDiv);
+  addObstacleBox(9.8, -5.5, 4.8, 0.4, 0.18);
+
+  // Main central island (larger)
+  createIsland(0, -1.5);
+
+  // Second island (upper area)
+  createIsland(0, -6.5);
+
+  // Small side prep stations
+  createSmallIsland(-5.5, 3.8);
+  createSmallIsland(5.5, 3.8);
+}
+
+function createSmallIsland(x, z) {
+  const island = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.9, 1.4), materials.woodLight);
+  island.position.set(x, 0.45, z);
+  island.castShadow = true;
+  island.receiveShadow = true;
+  world.add(island);
+
+  const top = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.18, 1.6), materials.counter);
+  top.position.set(x, 1.0, z);
+  top.castShadow = true;
+  world.add(top);
+
+  addObstacleBox(x, z, 2.4, 1.6, 0.18);
 }
 
 function createCounter(x, z, width, depth) {
@@ -575,9 +623,11 @@ function createIsland(x, z) {
 }
 
 function buildDecorations() {
-  createWindow(0, -7.03);
-  createShelf(-5.8, -6.98, ['🍎', '🍌', '🥕']);
-  createShelf(5.8, -6.98, ['🥛', '🧀', '🍇']);
+  createWindow(-6, -10.03);
+  createWindow(6, -10.03);
+  createShelf(-5.8, -9.98, ['🍎', '🍌', '🥕']);
+  createShelf(5.8, -9.98, ['🥛', '🧀', '🍇']);
+  createShelf(0, -9.98, ['🍅', '🫐', '🍊']);
   createHangingLamps();
   createRecipeBoard();
   createPlants();
@@ -618,12 +668,12 @@ function createShelf(x, z, emojis) {
 }
 
 function createHangingLamps() {
-  [-3.4, 0, 3.4].forEach((x) => {
+  [-5.5, -1.5, 2.5, 6.5].forEach((x) => {
     const cable = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.1, 10), materials.dark);
-    cable.position.set(x, 4.2, -0.8);
+    cable.position.set(x, 4.4, -2.5);
     world.add(cable);
     const shade = new THREE.Mesh(new THREE.ConeGeometry(0.42, 0.38, 24, 1, true), new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.42 }));
-    shade.position.set(x, 3.52, -0.8);
+    shade.position.set(x, 3.72, -2.5);
     shade.castShadow = true;
     world.add(shade);
   });
@@ -631,24 +681,24 @@ function createHangingLamps() {
 
 function createRecipeBoard() {
   const board = new THREE.Mesh(new THREE.BoxGeometry(2.35, 1.25, 0.12), new THREE.MeshStandardMaterial({ color: 0x7c2d12, roughness: 0.7 }));
-  board.position.set(-8.15, 2.8, -7.0);
+  board.position.set(-8.15, 2.8, -10.0);
   board.castShadow = true;
   world.add(board);
   const title = createTextSprite('ABC 123', 64, '#fef3c7', 'rgba(0,0,0,0)');
-  title.position.set(-8.15, 2.86, -6.86);
+  title.position.set(-8.15, 2.86, -9.86);
   title.scale.set(0.72, 0.42, 0.42);
   world.add(title);
 }
 
 function createPlants() {
-  [-7.55, 7.55].forEach((x) => {
+  [-13.2, 13.2].forEach((x) => {
     const potMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.26, 0.55, 18), new THREE.MeshStandardMaterial({ color: 0xc2410c, roughness: 0.65 }));
-    potMesh.position.set(x, 0.28, 5.85);
+    potMesh.position.set(x, 0.28, 9.2);
     potMesh.castShadow = true;
     world.add(potMesh);
     for (let i = 0; i < 7; i += 1) {
       const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 8), new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.8 }));
-      leaf.position.set(x + Math.sin(i) * 0.26, 0.68 + (i % 3) * 0.12, 5.85 + Math.cos(i) * 0.22);
+      leaf.position.set(x + Math.sin(i) * 0.26, 0.68 + (i % 3) * 0.12, 9.2 + Math.cos(i) * 0.22);
       leaf.scale.set(1.1, 0.45, 0.72);
       leaf.castShadow = true;
       world.add(leaf);
@@ -664,10 +714,10 @@ function buildLighting() {
   key.shadow.mapSize.set(2048, 2048);
   key.shadow.camera.near = 0.5;
   key.shadow.camera.far = 30;
-  key.shadow.camera.left = -10;
-  key.shadow.camera.right = 10;
-  key.shadow.camera.top = 10;
-  key.shadow.camera.bottom = -10;
+  key.shadow.camera.left = -16;
+  key.shadow.camera.right = 16;
+  key.shadow.camera.top = 16;
+  key.shadow.camera.bottom = -16;
   scene.add(key);
 
   const warm = new THREE.PointLight(0xffb86b, 65, 12, 2);
@@ -714,61 +764,72 @@ function createChef() {
   rightButton.position.x = 0.17;
   group.add(leftButton, rightButton);
 
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.34, 24, 18), skin);
-  head.position.y = 1.48;
-  head.scale.set(1.02, 0.96, 1.04);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.36, 24, 18), skin);
+  head.position.y = 1.52;
+  head.scale.set(1.05, 1.0, 1.06);
   head.castShadow = true;
   group.add(head);
 
-  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), skin);
-  nose.position.set(0, 1.46, 0.36);
-  nose.scale.set(1, 0.86, 1.15);
+  // Ears
+  const leftEar = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 8), skin);
+  leftEar.position.set(-0.37, 1.52, 0);
+  leftEar.scale.set(0.58, 0.85, 0.5);
+  leftEar.castShadow = true;
+  group.add(leftEar);
+  const rightEar = leftEar.clone();
+  rightEar.position.x = 0.37;
+  group.add(rightEar);
+
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 12), skin);
+  nose.position.set(0, 1.50, 0.38);
+  nose.scale.set(1.1, 0.9, 1.2);
   nose.castShadow = true;
   group.add(nose);
 
-  const capBase = new THREE.Mesh(new THREE.SphereGeometry(0.37, 28, 14, 0, Math.PI * 2, 0, Math.PI * 0.58), cap);
-  capBase.position.y = 1.72;
-  capBase.scale.set(1.08, 0.58, 1.02);
+  const capBase = new THREE.Mesh(new THREE.SphereGeometry(0.40, 28, 14, 0, Math.PI * 2, 0, Math.PI * 0.55), cap);
+  capBase.position.y = 1.78;
+  capBase.scale.set(1.1, 0.65, 1.04);
   capBase.castShadow = true;
   group.add(capBase);
 
-  const capBand = new THREE.Mesh(new THREE.CylinderGeometry(0.37, 0.38, 0.08, 28), cap);
-  capBand.position.y = 1.69;
-  capBand.scale.z = 0.9;
+  const capBand = new THREE.Mesh(new THREE.CylinderGeometry(0.40, 0.41, 0.1, 28), cap);
+  capBand.position.y = 1.74;
+  capBand.scale.z = 0.92;
   capBand.castShadow = true;
   group.add(capBand);
 
-  const capBrim = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.075, 0.28), cap);
-  capBrim.position.set(0, 1.65, 0.35);
-  capBrim.rotation.x = -0.08;
+  const capBrim = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.08, 0.36), cap);
+  capBrim.position.set(0, 1.68, 0.40);
+  capBrim.rotation.x = -0.12;
   capBrim.castShadow = true;
   group.add(capBrim);
 
-  const capBadge = createTextSprite('★', 72, '#facc15', 'rgba(255,255,255,0.95)');
-  capBadge.position.set(0, 1.74, 0.4);
-  capBadge.scale.set(0.22, 0.22, 0.22);
+  const capBadge = createTextSprite('★', 80, '#facc15', 'rgba(255,255,255,0.95)');
+  capBadge.position.set(0, 1.82, 0.43);
+  capBadge.scale.set(0.24, 0.24, 0.24);
   group.add(capBadge);
 
-  const leftEye = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), dark);
-  leftEye.position.set(-0.11, 1.51, 0.31);
+  const leftEye = new THREE.Mesh(new THREE.SphereGeometry(0.04, 10, 8), dark);
+  leftEye.position.set(-0.12, 1.56, 0.33);
   const rightEye = leftEye.clone();
-  rightEye.position.x = 0.11;
+  rightEye.position.x = 0.12;
   group.add(leftEye, rightEye);
 
-  const leftBrow = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.025, 0.025), dark);
-  leftBrow.position.set(-0.11, 1.58, 0.33);
-  leftBrow.rotation.z = 0.14;
+  const leftBrow = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.03, 0.03), dark);
+  leftBrow.position.set(-0.12, 1.64, 0.35);
+  leftBrow.rotation.z = 0.16;
   const rightBrow = leftBrow.clone();
-  rightBrow.position.x = 0.11;
-  rightBrow.rotation.z = -0.14;
+  rightBrow.position.x = 0.12;
+  rightBrow.rotation.z = -0.16;
   group.add(leftBrow, rightBrow);
 
-  const mustacheLeft = new THREE.Mesh(new THREE.TorusGeometry(0.085, 0.018, 8, 18, Math.PI), dark);
-  mustacheLeft.position.set(-0.07, 1.38, 0.35);
-  mustacheLeft.rotation.set(Math.PI, 0.05, -0.18);
+  // Big bushy mustache
+  const mustacheLeft = new THREE.Mesh(new THREE.TorusGeometry(0.115, 0.028, 10, 20, Math.PI), dark);
+  mustacheLeft.position.set(-0.072, 1.40, 0.37);
+  mustacheLeft.rotation.set(Math.PI, 0.05, -0.2);
   const mustacheRight = mustacheLeft.clone();
-  mustacheRight.position.x = 0.07;
-  mustacheRight.rotation.z = 0.18;
+  mustacheRight.position.x = 0.072;
+  mustacheRight.rotation.z = 0.2;
   group.add(mustacheLeft, mustacheRight);
 
   const smile = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.012, 8, 24, Math.PI), dark);
@@ -799,16 +860,12 @@ function createChef() {
   star.scale.set(0.16, 0.16, 0.16);
   group.add(star);
 
-  group.userData.leftArm = createLimb(group, -0.44, 0.98, 0.06, shirt, 0.1, 0.44);
-  group.userData.rightArm = createLimb(group, 0.44, 0.98, 0.06, shirt, 0.1, 0.44);
-  group.userData.leftHand = createHand(group, -0.48, 0.67, 0.12);
-  group.userData.rightHand = createHand(group, 0.48, 0.67, 0.12);
-  group.userData.leftLeg = createLimb(group, -0.18, 0.28, 0.04, overalls, 0.11, 0.48);
-  group.userData.rightLeg = createLimb(group, 0.18, 0.28, 0.04, overalls, 0.11, 0.48);
-  group.userData.leftShoe = createShoe(group, -0.18, 0.03, 0.18, shoes);
-  group.userData.rightShoe = createShoe(group, 0.18, 0.03, 0.18, shoes);
+  group.userData.leftArm = createArmGroup(group, -0.48, 1.14, 0.06, shirt);
+  group.userData.rightArm = createArmGroup(group, 0.48, 1.14, 0.06, shirt);
+  group.userData.leftLeg = createLegGroup(group, -0.19, 0.72, 0, overalls, shoes);
+  group.userData.rightLeg = createLegGroup(group, 0.19, 0.72, 0, overalls, shoes);
 
-  group.position.set(0, 0, 4.9);
+  group.position.set(0, 0, 8.5);
   group.scale.setScalar(palette.scale);
   return group;
 }
@@ -817,28 +874,42 @@ function createCharacterMaterial(color) {
   return new THREE.MeshStandardMaterial({ color, roughness: 0.48 });
 }
 
-function createLimb(parent, x, y, z, material, radius = 0.085, length = 0.45) {
-  const limb = new THREE.Mesh(new THREE.CapsuleGeometry(radius, length, 6, 10), material);
-  limb.position.set(x, y, z);
-  limb.castShadow = true;
-  parent.add(limb);
-  return limb;
+// Arm group: pivot at shoulder, arm + glove hang down so they move together
+function createArmGroup(parent, x, y, z, armMaterial) {
+  const armGroup = new THREE.Group();
+  armGroup.position.set(x, y, z);
+
+  const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.095, 0.38, 6, 10), armMaterial);
+  arm.position.y = -0.28;
+  arm.castShadow = true;
+  armGroup.add(arm);
+
+  const glove = new THREE.Mesh(new THREE.SphereGeometry(0.115, 16, 12), materials.chefWhite);
+  glove.position.y = -0.56;
+  glove.castShadow = true;
+  armGroup.add(glove);
+
+  parent.add(armGroup);
+  return armGroup;
 }
 
-function createHand(parent, x, y, z) {
-  const hand = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 12), materials.chefWhite);
-  hand.position.set(x, y, z);
-  hand.castShadow = true;
-  parent.add(hand);
-  return hand;
-}
+// Leg group: pivot at hip, leg + shoe hang down so they move together
+function createLegGroup(parent, x, y, z, legMaterial, shoeMaterial) {
+  const legGroup = new THREE.Group();
+  legGroup.position.set(x, y, z);
 
-function createShoe(parent, x, y, z, material) {
-  const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.14, 0.42), material);
-  shoe.position.set(x, y, z);
+  const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.105, 0.38, 6, 10), legMaterial);
+  leg.position.y = -0.28;
+  leg.castShadow = true;
+  legGroup.add(leg);
+
+  const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.29, 0.14, 0.46), shoeMaterial);
+  shoe.position.set(0, -0.58, 0.07);
   shoe.castShadow = true;
-  parent.add(shoe);
-  return shoe;
+  legGroup.add(shoe);
+
+  parent.add(legGroup);
+  return legGroup;
 }
 
 function animateChefWalk(elapsed) {
@@ -847,10 +918,6 @@ function animateChefWalk(elapsed) {
   chef.userData.rightArm.rotation.x = -swing;
   chef.userData.leftLeg.rotation.x = -swing * 0.65;
   chef.userData.rightLeg.rotation.x = swing * 0.65;
-  chef.userData.leftHand.rotation.x = swing;
-  chef.userData.rightHand.rotation.x = -swing;
-  chef.userData.leftShoe.rotation.x = -swing * 0.45;
-  chef.userData.rightShoe.rotation.x = swing * 0.45;
   chef.position.y = Math.abs(Math.sin(elapsed * 9)) * 0.035;
 }
 
@@ -859,10 +926,6 @@ function animateChefIdle(elapsed) {
   chef.userData.rightArm.rotation.x = -Math.sin(elapsed * 2) * 0.08;
   chef.userData.leftLeg.rotation.x = 0;
   chef.userData.rightLeg.rotation.x = 0;
-  chef.userData.leftHand.rotation.x = 0;
-  chef.userData.rightHand.rotation.x = 0;
-  chef.userData.leftShoe.rotation.x = 0;
-  chef.userData.rightShoe.rotation.x = 0;
   chef.position.y = Math.sin(elapsed * 2.2) * 0.018;
 }
 
@@ -899,14 +962,34 @@ function createSteamParticles() {
 
 function createRoundItems(recipe) {
   const positions = [
-    [-7.5, -4.55], [-5.35, -4.7], [-3.05, -4.35], [3.05, -4.35], [5.35, -4.7], [7.5, -4.55],
-    [-7.65, 0.85], [7.65, 0.85], [-6.1, 3.25], [-3.2, 4.75], [3.2, 4.75], [6.1, 3.25]
+    // Back row (near back counter)
+    [-10.5, -7.5], [-5.5, -8.0], [0, -8.0], [5.5, -8.0], [10.5, -7.5],
+    // Upper mid (around second island)
+    [-8.5, -5.0], [-3.5, -5.0], [3.5, -5.0], [8.5, -5.0],
+    // Center (around main island, sides)
+    [-11.5, -1.5], [-4.5, -2.5], [4.5, -2.5], [11.5, -1.5],
+    // Lower mid (around small side stations)
+    [-8.5, 3.5], [8.5, 3.5],
+    // Near front
+    [-4.0, 6.5], [4.0, 6.5], [0, 7.0]
   ];
   const required = getRequiredItems(recipe);
-  const extras = shuffle([...INGREDIENTS]).slice(0, Math.max(0, 12 - required.length));
-  const items = shuffle([...required, ...extras]).slice(0, 12);
-
-  return items.map((ingredient, index) => ({
+  let extras;
+  if (state.mode === 'word') {
+    const usedLetters = new Set(recipe.word.split(''));
+    const alphabet = 'ABCDEFGHIJKLMNOPRSTUVZ'.split('').filter((l) => !usedLetters.has(l));
+    extras = shuffle(alphabet).slice(0, Math.max(0, positions.length - required.length)).map((letter, i) => ({
+      id: `decoy-${letter}-${i}`,
+      emoji: letter,
+      color: 'orange',
+      letter
+    }));
+  } else {
+    const requiredIds = new Set(required.map((r) => r.id));
+    extras = shuffle([...INGREDIENTS]).filter((ing) => !requiredIds.has(ing.id)).slice(0, Math.max(0, positions.length - required.length));
+  }
+  const allItems = shuffle([...required, ...extras]).slice(0, positions.length);
+  return allItems.map((ingredient, index) => ({
     ...ingredient,
     x: positions[index][0],
     z: positions[index][1],
@@ -925,10 +1008,20 @@ function getRequiredItems(recipe) {
     }));
   }
   if (state.mode === 'count') {
-    return Array.from({ length: recipe.count }, () => getIngredient(recipe.countIngredient));
+    return Array.from({ length: recipe.count }, () => ({ ...getIngredient(recipe.countIngredient) }));
   }
-  const colorItems = INGREDIENTS.filter((ingredient) => ingredient.color === recipe.color);
-  return Array.from({ length: recipe.colorCount }, (_, index) => colorItems[index % colorItems.length]);
+  if (state.mode === 'color') {
+    const colorItems = INGREDIENTS.filter((ingredient) => ingredient.color === recipe.color);
+    return Array.from({ length: recipe.colorCount }, (_, index) => ({ ...colorItems[index % colorItems.length] }));
+  }
+  if (state.mode === 'recipe') {
+    return recipe.ingredients.map((id) => ({ ...getIngredient(id) }));
+  }
+  if (state.mode === 'math') {
+    const total = recipe.mathA + recipe.mathB;
+    return Array.from({ length: total }, () => ({ ...getIngredient(recipe.countIngredient) }));
+  }
+  return [];
 }
 
 function createItemMeshes() {
@@ -941,41 +1034,33 @@ function createItemMeshes() {
     const color = new THREE.Color(COLORS[item.color] || '#38bdf8');
     const beam = new THREE.Mesh(
       new THREE.CylinderGeometry(0.52, 0.52, 1.8, 32, 1, true),
-      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.24, depthWrite: false, side: THREE.DoubleSide })
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.18, depthWrite: false, side: THREE.DoubleSide })
     );
     beam.position.y = 0.42;
     group.add(beam);
 
-    const base = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.58, 0.58, 0.2, 36),
-      new THREE.MeshStandardMaterial({ color, roughness: 0.35, metalness: 0.05 })
-    );
-    base.position.y = -0.1;
-    base.castShadow = true;
-    group.add(base);
-
-    const orb = new THREE.Mesh(
-      new THREE.SphereGeometry(0.46, 32, 22),
-      new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.18, emissive: color, emissiveIntensity: 0.28 })
-    );
-    orb.scale.y = 0.62;
-    orb.castShadow = true;
-    group.add(orb);
-
     const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(0.78, 0.045, 10, 56),
-      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.95 })
+      new THREE.TorusGeometry(0.62, 0.04, 10, 56),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.92 })
     );
     ring.rotation.x = Math.PI / 2;
     group.add(ring);
 
-    const label = createTextSprite(item.emoji, item.letter ? 98 : 78, COLORS[item.color] || '#111827', 'rgba(255,255,255,0.92)');
-    label.position.y = 0.34;
-    label.scale.set(0.92, 0.92, 0.92);
+    // Big emoji label — no background for food items, tile background for letters
+    const isLetter = Boolean(item.letter);
+    const label = createTextSprite(
+      item.emoji,
+      isLetter ? 260 : 300,
+      isLetter ? '#1e3a8a' : '#111827',
+      isLetter ? 'rgba(219,234,254,0.92)' : 'rgba(255,255,255,0)',
+      512
+    );
+    label.position.y = 0.18;
+    label.scale.set(1.9, 1.9, 1.9);
     group.add(label);
 
     const arrow = createTextSprite('↓', 96, COLORS[item.color] || '#111827', 'rgba(255,255,255,0)');
-    arrow.position.y = 1.55;
+    arrow.position.y = 1.65;
     arrow.scale.set(0.45, 0.45, 0.45);
     group.add(arrow);
 
@@ -1061,15 +1146,26 @@ function getExpectedTarget() {
     const letter = recipe.word[state.expectedIndex];
     return { type: 'letter', value: letter, label: letter, color: COLORS.blue };
   }
-  if (state.mode === 'count') {
+  if (state.mode === 'count' || state.mode === 'math') {
     const ingredient = getIngredient(recipe.countIngredient);
     return { type: 'ingredient', value: ingredient.id, label: `${ingredient.emoji} ${getItemName(ingredient.id)}`, color: COLORS[ingredient.color] };
   }
-  return { type: 'color', value: recipe.color, label: getColorName(recipe.color), color: COLORS[recipe.color] };
+  if (state.mode === 'color') {
+    return { type: 'color', value: recipe.color, label: getColorName(recipe.color), color: COLORS[recipe.color] };
+  }
+  if (state.mode === 'recipe') {
+    const uncollected = recipe.ingredients.filter((id) => !state.collectedIngredientIds.has(id));
+    if (!uncollected.length) return null;
+    const ingredient = getIngredient(uncollected[0]);
+    return { type: 'any-ingredient', value: uncollected, label: uncollected.map((id) => getItemName(id)).join(', '), color: COLORS[ingredient.color] };
+  }
+  return null;
 }
 
 function isCorrectItem(item, expected) {
+  if (!expected) return false;
   if (expected.type === 'letter') return item.letter === expected.value;
+  if (expected.type === 'any-ingredient') return Array.isArray(expected.value) && expected.value.includes(item.id) && !state.collectedIngredientIds.has(item.id);
   if (expected.type === 'ingredient') return item.id === expected.value;
   return item.color === expected.value;
 }
@@ -1078,7 +1174,10 @@ function isRoundComplete() {
   const recipe = getCurrentRecipe();
   if (state.mode === 'word') return state.expectedIndex >= recipe.word.length;
   if (state.mode === 'count') return state.collectedCount >= recipe.count;
-  return state.collectedCount >= recipe.colorCount;
+  if (state.mode === 'color') return state.collectedCount >= recipe.colorCount;
+  if (state.mode === 'recipe') return state.collectedIngredientIds.size >= recipe.ingredients.length;
+  if (state.mode === 'math') return state.collectedCount >= recipe.mathA + recipe.mathB;
+  return false;
 }
 
 function updateHud() {
@@ -1099,7 +1198,20 @@ function getInstructionText() {
   if (state.mode === 'count') {
     return t('countInstruction', { count: recipe.count, ingredient: getItemName(recipe.countIngredient), current: state.collectedCount });
   }
-  return t('colorInstruction', { color: getColorName(recipe.color), current: state.collectedCount, count: recipe.colorCount });
+  if (state.mode === 'color') {
+    return t('colorInstruction', { color: getColorName(recipe.color), current: state.collectedCount, count: recipe.colorCount });
+  }
+  if (state.mode === 'recipe') {
+    const remaining = recipe.ingredients
+      .filter((id) => !state.collectedIngredientIds.has(id))
+      .map((id) => `${getIngredient(id).emoji} ${getItemName(id)}`)
+      .join(', ');
+    return t('recipeInstruction', { name: getRecipeName(recipe), remaining });
+  }
+  if (state.mode === 'math') {
+    return t('mathInstruction', { a: recipe.mathA, b: recipe.mathB, ingredient: getItemName(recipe.countIngredient), current: state.collectedCount, total: recipe.mathA + recipe.mathB });
+  }
+  return '';
 }
 
 function buildProgressText(recipe) {
@@ -1108,6 +1220,14 @@ function buildProgressText(recipe) {
     const pending = recipe.word.slice(state.expectedIndex).replace(/./g, '_').split('').join(' ');
     return `${t('target')}: ${done} ${pending}`.trim();
   }
+  if (state.mode === 'recipe') {
+    const done = recipe.ingredients.filter((id) => state.collectedIngredientIds.has(id)).map((id) => getIngredient(id).emoji).join(' ');
+    const todo = recipe.ingredients.filter((id) => !state.collectedIngredientIds.has(id)).map((id) => getIngredient(id).emoji).join(' ');
+    return `${done ? `✅ ${done}  ` : ''}➜ ${todo}`;
+  }
+  if (state.mode === 'math') {
+    return `${recipe.mathA} + ${recipe.mathB} = ${recipe.mathA + recipe.mathB}  ·  ${state.collectedCount}/${recipe.mathA + recipe.mathB}`;
+  }
   const target = state.mode === 'count' ? recipe.count : recipe.colorCount;
   return `${t('target')}: ${state.collectedCount}/${target}`;
 }
@@ -1115,7 +1235,10 @@ function buildProgressText(recipe) {
 function buildSummaryLine(recipe) {
   if (state.mode === 'word') return recipe.word;
   if (state.mode === 'count') return `${recipe.count} ${getItemName(recipe.countIngredient)}`;
-  return getColorName(recipe.color);
+  if (state.mode === 'color') return getColorName(recipe.color);
+  if (state.mode === 'recipe') return recipe.ingredients.map((id) => getIngredient(id).emoji).join(' + ');
+  if (state.mode === 'math') return `${recipe.mathA} + ${recipe.mathB} = ${recipe.mathA + recipe.mathB}`;
+  return '';
 }
 
 function applyTranslations() {
@@ -1142,20 +1265,22 @@ function pickMessage(key, replacements = {}) {
   return selected.replace(/\{(\w+)\}/g, (_, name) => replacements[name] ?? '');
 }
 
-function createTextSprite(text, size = 64, color = '#111827', background = 'rgba(255,255,255,0.9)') {
+function createTextSprite(text, size = 64, color = '#111827', background = 'rgba(255,255,255,0.9)', canvasSize = 256) {
   const textureCanvas = document.createElement('canvas');
-  textureCanvas.width = 256;
-  textureCanvas.height = 256;
+  textureCanvas.width = canvasSize;
+  textureCanvas.height = canvasSize;
   const ctx = textureCanvas.getContext('2d');
-  ctx.clearRect(0, 0, 256, 256);
-  ctx.fillStyle = background;
-  roundedRect(ctx, 18, 18, 220, 220, 48);
-  ctx.fill();
+  ctx.clearRect(0, 0, canvasSize, canvasSize);
+  if (background !== 'rgba(255,255,255,0)' && background !== 'transparent') {
+    ctx.fillStyle = background;
+    roundedRect(ctx, canvasSize * 0.07, canvasSize * 0.07, canvasSize * 0.86, canvasSize * 0.86, canvasSize * 0.188);
+    ctx.fill();
+  }
   ctx.fillStyle = color;
   ctx.font = `900 ${size}px Nunito, Arial, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(text, 128, 132);
+  ctx.fillText(text, canvasSize / 2, canvasSize / 2 + canvasSize * 0.051);
 
   const texture = new THREE.CanvasTexture(textureCanvas);
   texture.colorSpace = THREE.SRGBColorSpace;
