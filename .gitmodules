@@ -1,12 +1,12 @@
 [submodule "banana-party"]
 	path = banana-party
-	url = git@github-personal:cmlozanos/banana-party.git
+	url = https://github.com/cmlozanos/banana-party.git
 [submodule "fancy-jumping-car"]
 	path = fancy-jumping-car
-	url = git@github-personal:cmlozanos/fancy-jumping-car.git
+	url = https://github.com/cmlozanos/fancy-jumping-car.git
 [submodule "jump-the-car"]
 	path = jump-the-car
-	url = git@github-personal:cmlozanos/jump-the-car.git
+	url = https://github.com/cmlozanos/jump-the-car.git
 [submodule "world-of-joy"]
 	path = world-of-joy
-	url = git@github-personal:cmlozanos/world-of-joy.git
+	url = https://github.com/cmlozanos/world-of-joy.git
