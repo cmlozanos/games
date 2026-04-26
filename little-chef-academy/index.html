@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#fb923c">
+  <meta name="description" content="Juego educativo para aprender palabras, números y colores cocinando recetas felices.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <title>Little Chef Academy</title>
+</head>
+<body>
+  <main id="app-shell">
+    <section id="menu-screen" class="screen menu-screen">
+      <div class="hero-card">
+        <div class="top-row">
+          <a class="home-link" href="../index.html" aria-label="Games">← Games</a>
+          <label class="language-control">
+            <span data-i18n="languageLabel">Idioma</span>
+            <select id="language-select" aria-label="Language">
+              <option value="es" data-i18n="spanish">Español</option>
+              <option value="en" data-i18n="english">English</option>
+            </select>
+          </label>
+        </div>
+        <div class="hero-art" aria-hidden="true">👩‍🍳</div>
+        <h1 data-i18n="appTitle">Little Chef Academy</h1>
+        <p data-i18n="appSubtitle">Aprende palabras, números y colores preparando recetas felices.</p>
+      </div>
+
+      <section class="mode-panel" aria-labelledby="mode-title">
+        <h2 id="mode-title" data-i18n="chooseMode">Elige una misión</h2>
+        <div class="mode-grid">
+          <button class="mode-card" data-mode="word" type="button">
+            <span class="mode-emoji">🔤</span>
+            <strong data-i18n="wordMode">Palabras</strong>
+            <span data-i18n="wordModeDescription">Recoge letras en orden para formar la receta.</span>
+          </button>
+          <button class="mode-card" data-mode="count" type="button">
+            <span class="mode-emoji">🔢</span>
+            <strong data-i18n="countMode">Números</strong>
+            <span data-i18n="countModeDescription">Busca la cantidad correcta de ingredientes.</span>
+          </button>
+          <button class="mode-card" data-mode="color" type="button">
+            <span class="mode-emoji">🎨</span>
+            <strong data-i18n="colorMode">Colores</strong>
+            <span data-i18n="colorModeDescription">Encuentra ingredientes del color pedido.</span>
+          </button>
+        </div>
+      </section>
+    </section>
+
+    <section id="game-screen" class="screen game-screen" hidden>
+      <header class="game-hud">
+        <div>
+          <strong id="round-label">Receta 1/6</strong>
+          <span id="score-label">Estrellas: 0 ⭐</span>
+        </div>
+        <div class="hud-buttons">
+          <button id="speak-button" class="small-button" type="button" data-i18n="speak">Escuchar</button>
+          <button id="sound-button" class="small-button" type="button">Sonido: sí</button>
+          <button id="pause-button" class="small-button" type="button" data-i18n="pause">Pausa</button>
+          <button id="menu-button" class="small-button" type="button" data-i18n="backToMenu">Menú</button>
+        </div>
+      </header>
+
+      <div class="instruction-card">
+        <p id="instruction-label"></p>
+        <p id="progress-label"></p>
+        <p id="feedback-label"></p>
+      </div>
+
+      <canvas id="game-canvas" width="960" height="620" aria-label="Little Chef Academy game"></canvas>
+
+      <div class="touch-controls" aria-label="Touch controls">
+        <button data-direction="up" type="button">▲</button>
+        <div>
+          <button data-direction="left" type="button">◀</button>
+          <button data-direction="down" type="button">▼</button>
+          <button data-direction="right" type="button">▶</button>
+        </div>
+      </div>
+
+      <footer class="hint-bar">
+        <span data-i18n="howToMove">Muévete con WASD, flechas o los botones táctiles.</span>
+        <span data-i18n="collectHint">Toca el ingrediente correcto para añadirlo a la olla.</span>
+      </footer>
+    </section>
+
+    <section id="summary-screen" class="screen summary-screen" hidden>
+      <div class="summary-card">
+        <div class="summary-emoji" aria-hidden="true">🍲</div>
+        <h2 id="summary-title">¡Receta lista!</h2>
+        <p id="summary-message"></p>
+        <strong id="summary-recipe"></strong>
+        <div class="summary-actions">
+          <button id="next-button" class="primary-button" type="button">Siguiente</button>
+          <button id="replay-button" class="secondary-button" type="button">Menú</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

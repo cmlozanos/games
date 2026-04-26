@@ -1,0 +1,17 @@
+{
+  "name": "Little Chef Academy",
+  "short_name": "Little Chef",
+  "description": "Juego educativo para aprender palabras, números y colores cocinando recetas felices.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffedd5",
+  "theme_color": "#fb923c",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

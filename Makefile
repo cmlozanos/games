@@ -9,7 +9,7 @@ help:
 	@echo "  banana-party                  Monkey Jumper to achieve all banana at the mountain"
 	@echo "  fancy-jumping-car             Car jumping game"
 	@echo "  jump-the-car                  Game for children - Jump the car"
-	@echo "  quasar-firebase-memory-cards  Memory card game"
+	@echo "  little-chef-academy           Educational cooking game for children"
 	@echo "  world-of-joy                  World of Joy game"
 	@echo ""
 	@echo "Targets:"
