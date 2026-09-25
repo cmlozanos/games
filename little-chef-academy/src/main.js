@@ -226,6 +226,7 @@ function startMode(mode) {
   menuScreen.hidden = true;
   summaryScreen.hidden = true;
   gameScreen.hidden = false;
+  resizeRenderer();
   startRound();
 }
 
@@ -270,6 +271,7 @@ function startNextRound() {
   document.body.classList.add('is-playing');
   summaryScreen.hidden = true;
   gameScreen.hidden = false;
+  resizeRenderer();
   startRound();
 }
 

@@ -20,6 +20,8 @@ test('Chef: Chrome95 layout, challenge, pause and isolated offline cache',async(
   await solveGate(page);
   await page.locator('[data-mode="count"]').click();
   await expect(page.locator('#game-screen')).toBeVisible();
+  const aspect=await page.locator('#game-canvas').evaluate(canvas=>({pixels:canvas.width/canvas.height,display:canvas.clientWidth/canvas.clientHeight}));
+  expect(Math.abs(aspect.pixels-aspect.display)).toBeLessThan(0.01);
   await page.locator('#pause-button').click();
   const pauseLabel=await page.locator('#pause-button').textContent();
   await page.evaluate(()=>{const now=Date.now;Date.now=()=>now()+600001;});
