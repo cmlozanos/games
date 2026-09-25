@@ -7,9 +7,11 @@ La prioridad solicitada es la Samsung SM-T530NU, Android 5.0.2 y Chrome
 Jump the Car y Turbo Loop Legends, conservando contenido, obstáculos, progreso,
 retos educativos, sonido inicialmente apagado y salida a este catálogo.
 
-Se aplica el modo ligero opcional acordado; no se cambia unilateralmente el
-valor inicial de calidad normal. El selector recuerda la elección en el propio
-dispositivo. No se modifican Ubuntu, servicios de datos ni infraestructura AWS.
+Tras la confirmación explícita del usuario, el modo ligero es el valor inicial
+cuando no existe una preferencia guardada. El selector sigue permitiendo calidad
+normal y respeta las elecciones guardadas en el dispositivo; no se sobrescriben
+progreso ni ajustes al abrir el juego. No se modifican Ubuntu, servicios de datos
+ni infraestructura AWS.
 
 ## Causas corregidas
 

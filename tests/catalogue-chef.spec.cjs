@@ -4,7 +4,8 @@ const {solveGate}=require('./helpers/learning-fixture.cjs');
 test('catalogue links only to games, in the same tab, on a narrow phone',async({page})=>{
   await page.setViewportSize({width:320,height:640});
   await page.goto('/');
-  await expect(page.locator('main a')).toHaveCount(16);
+  await expect(page.locator('main a')).toHaveCount(17);
+  await expect(page.locator('a[href="./burbujas/"]')).toContainText('Burbujas');
   await expect(page.getByRole('link',{name:'Quiz de Animales'})).toHaveAttribute('href','https://cmlozanos.github.io/home/animal-quiz/');
   await expect(page.locator('a[target="_blank"]')).toHaveCount(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);

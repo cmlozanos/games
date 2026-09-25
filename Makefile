@@ -5,6 +5,7 @@ GIT_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 .PHONY: check install-tests test
 check:
 	$(MAKE) -C little-chef-academy check
+	$(MAKE) -C burbujas check
 	node --check tests/catalogue-chef.spec.cjs
 
 install-tests:
