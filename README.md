@@ -33,3 +33,5 @@ restricciones de navegador, privacidad y plan de prueba. No se ha seleccionado
 arquitectura ni aprovisionado infraestructura o costes.
 
 [Alcance de esta adaptación](docs/legacy-adaptation.md).
+
+[Optimización para tablets antiguas y criterios para próximos juegos](docs/tablet-performance.md).
