@@ -2,6 +2,17 @@ GIT_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 
 .DEFAULT_GOAL := help
 
+.PHONY: check install-tests test
+check:
+	$(MAKE) -C little-chef-academy check
+	node --check tests/catalogue-chef.spec.cjs
+
+install-tests:
+	npm ci
+
+test:
+	npm test
+
 help:
 	@echo "Games monorepo"
 	@echo ""

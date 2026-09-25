@@ -75,7 +75,7 @@ const state = {
   paused: false,
   completed: false,
   finalSummary: false,
-  soundEnabled: savedState.soundEnabled ?? true,
+  soundEnabled: false,
   selectedCharacter: CHARACTER_OPTIONS[savedState.selectedCharacter] ? savedState.selectedCharacter : 'pepper',
   keys: new Set(),
   player: { x: 0, z: 4.9, face: 0 },
@@ -88,8 +88,28 @@ const state = {
   feedback: ''
 };
 
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+const gameTimers = LearningGate.createTimers();
+let educationLocked = true;
+const activeAudio = new Set();
+const educationGate = LearningGate.mount({
+  gameId: 'little-chef-academy',
+  onLock() {
+    educationLocked = true;
+    gameTimers.pause();
+    state.keys.clear();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    activeAudio.forEach(context => context.close().catch(() => {}));
+    activeAudio.clear();
+  },
+  onUnlock() {
+    clock.getDelta();
+    educationLocked = false;
+    gameTimers.resume();
+  }
+});
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'default' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -126,6 +146,8 @@ renderer.setAnimationLoop(loop);
 
 function bindEvents() {
   window.addEventListener('resize', resizeRenderer);
+  window.addEventListener('blur', () => state.keys.clear());
+  document.addEventListener('visibilitychange', () => { if (document.hidden) state.keys.clear(); });
 
   window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase();
@@ -195,6 +217,7 @@ function bindEvents() {
 }
 
 function startMode(mode) {
+  document.body.classList.add('is-playing');
   state.mode = mode;
   state.roundIndex = 0;
   state.stars = 0;
@@ -244,12 +267,14 @@ function startNextRound() {
     return;
   }
   state.roundIndex += 1;
+  document.body.classList.add('is-playing');
   summaryScreen.hidden = true;
   gameScreen.hidden = false;
   startRound();
 }
 
 function showMenu() {
+  document.body.classList.remove('is-playing');
   state.paused = false;
   state.keys.clear();
   menuScreen.hidden = false;
@@ -258,6 +283,8 @@ function showMenu() {
 }
 
 function loop() {
+  educationGate.check();
+  if (educationLocked) { clock.getDelta(); return; }
   const delta = Math.min(clock.getDelta(), 0.033);
   const elapsed = clock.elapsedTime;
 
@@ -444,10 +471,11 @@ function completeRound() {
   state.completed = true;
   state.stars += 3;
   playSuccessMelody();
-  setTimeout(showRoundSummary, 800);
+  gameTimers.set(showRoundSummary, 800);
 }
 
 function showRoundSummary() {
+  document.body.classList.remove('is-playing');
   const recipe = getCurrentRecipe();
   summaryTitle.textContent = t('completedTitle');
   summaryMessage.textContent = t('completedMessage', { recipe: getRecipeName(recipe) });
@@ -461,6 +489,7 @@ function showRoundSummary() {
 }
 
 function showFinalSummary() {
+  document.body.classList.remove('is-playing');
   summaryTitle.textContent = t('finalTitle');
   summaryMessage.textContent = t('finalMessage');
   summaryRecipe.textContent = `${t('score')}: ${state.stars} ⭐`;
@@ -1110,7 +1139,7 @@ function pulseWrongItem(item) {
   const entry = state.itemMeshes.find((candidate) => candidate.item.meshId === item.meshId);
   if (!entry) return;
   entry.group.scale.set(1.25, 1.25, 1.25);
-  setTimeout(() => entry.group.scale.set(1, 1, 1), 180);
+  gameTimers.set(() => entry.group.scale.set(1, 1, 1), 180);
 }
 
 function spawnSparkles(position, color) {
@@ -1306,7 +1335,7 @@ function speakCurrentInstruction() {
 }
 
 function speak(message) {
-  if (!state.soundEnabled || !('speechSynthesis' in window) || !message) return;
+  if (educationLocked || !state.soundEnabled || !('speechSynthesis' in window) || !message) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(message);
   utterance.lang = state.locale === 'es' ? 'es-ES' : 'en-US';
@@ -1316,10 +1345,11 @@ function speak(message) {
 }
 
 function playTone(frequency, duration, type) {
-  if (!state.soundEnabled) return;
+  if (educationLocked || !state.soundEnabled) return;
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!AudioContext) return;
   const audioContext = new AudioContext();
+  activeAudio.add(audioContext);
   const oscillator = audioContext.createOscillator();
   const gain = audioContext.createGain();
   oscillator.type = type;
@@ -1331,11 +1361,11 @@ function playTone(frequency, duration, type) {
   gain.connect(audioContext.destination);
   oscillator.start();
   oscillator.stop(audioContext.currentTime + duration);
-  oscillator.addEventListener('ended', () => audioContext.close());
+  oscillator.addEventListener('ended', () => { activeAudio.delete(audioContext); audioContext.close().catch(() => {}); });
 }
 
 function playSuccessMelody() {
-  [520, 660, 780, 1040].forEach((frequency, index) => setTimeout(() => playTone(frequency, 0.12, 'sine'), index * 120));
+  [520, 660, 780, 1040].forEach((frequency, index) => gameTimers.set(() => playTone(frequency, 0.12, 'sine'), index * 120));
 }
 
 function updateSoundButton() {

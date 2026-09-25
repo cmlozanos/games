@@ -1,4 +1,13 @@
-.PHONY: serve run stop help
+.PHONY: serve run stop help check icons
+
+icons:
+	node tools/icons.cjs
+
+check:
+	node --check src/main.js
+	node --check learning-gate.js
+	node --check sw.js
+	node tools/check.mjs
 
 .DEFAULT_GOAL := help
 

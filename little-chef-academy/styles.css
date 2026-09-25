@@ -18,6 +18,7 @@
 
 body {
   margin: 0;
+  min-height: 100vh;
   min-height: 100dvh;
   font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--ink);
@@ -52,6 +53,7 @@ a:focus-visible {
 }
 
 .screen {
+  min-height: calc(100vh - 4rem);
   min-height: calc(100dvh - 4rem);
 }
 
@@ -315,6 +317,7 @@ h1 {
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto auto;
   gap: 0.75rem;
+  min-height: calc(100vh - clamp(2rem, 6vw, 4rem));
   min-height: calc(100dvh - clamp(2rem, 6vw, 4rem));
 }
 
@@ -499,17 +502,20 @@ h1 {
 
   #app-shell {
     width: 100%;
+    height: 100vh;
     height: 100dvh;
     padding: 0.35rem;
   }
 
   .screen {
+    min-height: calc(100vh - 0.7rem);
     min-height: calc(100dvh - 0.7rem);
   }
 
   .game-screen {
     grid-template-rows: auto auto minmax(0, 1fr) auto;
     gap: 0.35rem;
+    min-height: calc(100vh - 0.7rem);
     min-height: calc(100dvh - 0.7rem);
   }
 
@@ -731,11 +737,13 @@ h1 {
 
   #app-shell {
     width: 100%;
+    height: 100vh;
     height: 100dvh;
     padding: 0.25rem;
   }
 
   .game-screen {
+    min-height: calc(100vh - 0.5rem);
     min-height: calc(100dvh - 0.5rem);
     grid-template-columns: minmax(0, 1fr) 16rem;
     grid-template-rows: auto minmax(0, 1fr);
@@ -785,12 +793,13 @@ h1 {
   }
 }
 
-body:has(#game-screen:not([hidden])) {
+body.is-playing {
   overflow: hidden;
 }
 
-body:has(#game-screen:not([hidden])) #app-shell {
+body.is-playing #app-shell {
   width: 100vw;
+  height: 100vh;
   height: 100dvh;
   max-width: none;
   margin: 0;
@@ -803,7 +812,9 @@ body:has(#game-screen:not([hidden])) #app-shell {
   z-index: 20;
   display: block;
   width: 100vw;
+  height: 100vh;
   height: 100dvh;
+  min-height: 100vh;
   min-height: 100dvh;
   overflow: hidden;
   background: #111827;
@@ -815,6 +826,7 @@ body:has(#game-screen:not([hidden])) #app-shell {
   z-index: 0;
   display: block;
   width: 100vw;
+  height: 100vh;
   height: 100dvh;
   min-height: 0;
   border: 0;
@@ -911,6 +923,7 @@ body:has(#game-screen:not([hidden])) #app-shell {
   position: fixed;
   inset: 0;
   z-index: 30;
+  min-height: 100vh;
   min-height: 100dvh;
   padding: 1rem;
   background: rgba(15, 23, 42, 0.44);

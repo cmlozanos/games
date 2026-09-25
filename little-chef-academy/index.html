@@ -7,11 +7,11 @@
   <meta name="description" content="Juego educativo para aprender palabras, números y colores cocinando recetas felices.">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260426-freeze-fix-1">
+  <link rel="stylesheet" href="styles.css?v=20260925-1">
   <title>Little Chef Academy</title>
 </head>
 <body>
@@ -19,7 +19,7 @@
     <section id="menu-screen" class="screen menu-screen">
       <div class="hero-card">
         <div class="top-row">
-          <a class="home-link" href="../index.html" aria-label="Games">← Games</a>
+          <a class="home-link" href="https://cmlozanos.github.io/games/" aria-label="Games">← Games</a>
           <label class="language-control">
             <span data-i18n="languageLabel">Idioma</span>
             <select id="language-select" aria-label="Language">
@@ -136,22 +136,23 @@
     </section>
   </main>
 
+  <script src="learning-gate.js?v=20260925-1"></script>
   <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        "three": "./vendor/three.module.js"
       }
     }
   </script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=20260426-freeze-fix-1').then((registration) => {
+        navigator.serviceWorker.register('./sw.js?v=20260925-1').then((registration) => {
           registration.update();
         }).catch(() => {});
       });
     }
   </script>
-  <script type="module" src="src/main.js?v=20260426-freeze-fix-1"></script>
+  <script type="module" src="src/main.js?v=20260925-1"></script>
 </body>
 </html>
