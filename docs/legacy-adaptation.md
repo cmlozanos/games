@@ -11,12 +11,14 @@ vehículo, circuito y modo; no son salidas al catálogo de aplicaciones.
 El catálogo `games` conserva las URL públicas de los juegos existentes. Alojar
 estáticos en `home` no implica visitar su catálogo de aplicaciones.
 
-## Quiz: decisión pendiente
+## Quiz: migración estática aprobada
 
-La versión anterior necesita Flask/Mongo y un túnel. Se ha propuesto una versión
-estática con progreso local por dispositivo y perfiles sin datos personales.
-No se exportará ni eliminará la base de datos antigua ni se publicará el repositorio
-privado. La política de conservación/sincronización requiere confirmación.
+El 25-09-2026 el usuario confirmó expresamente guardar el progreso únicamente
+en cada dispositivo, sin sincronizar tablets ni migrar los datos antiguos.
+La versión estática sustituye la redirección pública `home/animal-quiz/`, con
+perfiles genéricos locales. No usa Flask/Mongo ni túnel; la base de datos, el
+servidor y el repositorio privado anteriores no se modifican ni se publican.
+Borrar los datos del navegador elimina el progreso de ese dispositivo.
 
 ## AWS futuro
 

@@ -6,9 +6,10 @@ en la misma pestaña. Los juegos conservan sus URL públicas; los que viven bajo
 
 La adaptación del 25-09-2026 incorpora los retos educativos de entrada y cada
 diez minutos a los juegos antiguos, con pausas efectivas y regreso a este catálogo.
-El Quiz de Animales queda pendiente de confirmar cómo guardar perfiles/progreso
-al retirar su dependencia de Flask/Mongo. No se ha publicado ni eliminado su
-base de datos privada.
+El Quiz de Animales se sirve también como PWA estática, sin Flask/Mongo ni túnel.
+El usuario confirmó el 25-09-2026 que sus perfiles genéricos y progreso se guardan
+solo en cada dispositivo: sin sincronizar tablets ni migrar datos antiguos.
+La base de datos y el repositorio privados antiguos permanecen intactos.
 
 ## Desarrollo
 
