@@ -2,7 +2,7 @@ import {readFileSync, existsSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 const sw = readFileSync('sw.js', 'utf8');
-const files = sw.slice(sw.indexOf('const ASSETS'), sw.indexOf('];')).matchAll(/'([^']+)'/g);
+const files = sw.slice(sw.indexOf('const ASSETS'), sw.indexOf('];')).matchAll(/['"]([^'"]+)['"]/g);
 for (const [,file] of files) assert.ok(existsSync(file.split('?')[0]), file);
 assert.match(sw, /startsWith\('little-chef-academy-'\)/);
 assert.match(readFileSync('index.html','utf8'), /https:\/\/cmlozanos.github.io\/games\//);

@@ -11,6 +11,28 @@ El usuario confirmó el 25-09-2026 que sus perfiles genéricos y progreso se gua
 solo en cada dispositivo: sin sincronizar tablets ni migrar datos antiguos.
 La base de datos y el repositorio privados antiguos permanecen intactos.
 
+## Perfiles y retos
+
+El botón «Perfiles y retos» permite configurar este navegador, sin cuentas,
+nombres ni detección del modelo de tablet. Aprendiz propone los retos mínimos;
+Avanzado añade lectura. La lectura se puede seleccionar en ambos perfiles y
+nunca elimina sumas, restas o trazos. Se guarda solo al pulsar «Guardar en esta
+tablet», con una cookie de un año compartida por los juegos de este mismo sitio.
+Si falta la cookie, es inválida o ha caducado, se mantienen los retos mínimos.
+La interfaz avisa si el navegador bloquea su escritura. «Borrar perfil» vuelve
+a los mínimos sin borrar el progreso de los juegos.
+
+Para la Lenovo hay que configurarlo una vez desde su navegador. El perfil no
+se sincroniza con otros dispositivos ni equivale a una cuenta de niño. No es un
+control parental: el catálogo permanece accesible y no se añade contraseña.
+El usuario confirmó este alcance y la selección de un único reto aleatorio
+entre los habilitados antes de implementar esta ampliación.
+
+`make test-profiles` comprueba los controles, persistencia, mínimos obligatorios
+y cookies ausentes, malformadas, caducadas o bloqueadas. Admite `CHROME95_PATH`;
+los mismos casos se pueden ejecutar en WebKit con
+`npx --no-install playwright test tests/profile-settings.spec.cjs --browser=webkit`.
+
 ## Burbujas
 
 [Jugar a Burbujas](https://cmlozanos.github.io/games/burbujas/): adaptación autorizada

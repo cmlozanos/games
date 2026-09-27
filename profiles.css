@@ -1,0 +1,28 @@
+.profile-settings { max-width: 1100px; margin: -1.5rem auto 1.5rem; }
+.profile-settings button, .profile-settings input { font: inherit; }
+.profile-settings button { min-height: 44px; cursor: pointer; }
+.profile-settings [hidden] { display: none; }
+.profile-toggle { display: flex; align-items: center; gap: .5rem; margin-left: auto; padding: .5rem .75rem; color: #dbe5f4; background: transparent; border: 1px solid #52627a; border-radius: 12px; font-size: .9rem; }
+.profile-toggle svg { flex: none; }
+.profile-panel { max-width: 620px; margin: .75rem 0 0 auto; padding: 1.25rem; border: 1px solid #52627a; border-radius: 16px; background: #16213e; line-height: 1.5; }
+.profile-panel h2 { margin-bottom: .4rem; font-size: 1.25rem; }
+.profile-note { color: #becce0; font-size: .9rem; }
+.profile-panel fieldset { margin: 1rem 0; padding: 0; border: 0; min-width: 0; }
+.profile-panel legend { margin-bottom: .5rem; font-weight: 700; }
+.profile-levels, .profile-minimums { display: flex; flex-wrap: wrap; gap: .4rem 1rem; }
+.profile-panel label { display: inline-flex; align-items: center; gap: .6rem; min-height: 44px; cursor: pointer; }
+.profile-panel input { width: 20px; height: 20px; flex: none; accent-color: #f9ca24; }
+.profile-minimums { margin: .3rem 0 .5rem; color: #becce0; }
+.profile-minimums label { cursor: default; }
+.profile-reading { font-weight: 700; }
+.profile-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+.profile-actions button { padding: .6rem .9rem; border: 1px solid #667a95; border-radius: 10px; color: #e3ebf8; background: transparent; }
+#profile-save { border-color: #f9ca24; background: #f9ca24; color: #17213a; font-weight: 700; }
+.profile-settings button:focus-visible, .profile-settings input:focus-visible { outline: 3px solid #90dbff; outline-offset: 3px; }
+.profile-settings button:disabled { opacity: .6; cursor: not-allowed; }
+.profile-status { min-height: 1.5em; margin-top: .75rem; font-size: .9rem; color: #c9efd6; }
+.profile-status[data-error="true"] { color: #ffd1c9; }
+@media (max-width: 400px) {
+  .profile-panel { padding: 1rem; }
+  .profile-actions { flex-direction: column; }
+}

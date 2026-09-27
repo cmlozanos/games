@@ -1,12 +1,27 @@
+# Bundle sync only writes this repository; provide the canonical data directory explicitly.
+LEARNING_SOURCE ?=
+.PHONY: sync-gates check-gates
+
+sync-gates:
+	node tools/sync-learning-gate.mjs --source "$(LEARNING_SOURCE)"
+
+check-gates:
+	node tools/sync-learning-gate.mjs --check $(if $(LEARNING_SOURCE),--source "$(LEARNING_SOURCE)")
+
+check: check-gates
+
 GIT_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 
 .DEFAULT_GOAL := help
 
-.PHONY: check install-tests test test-touch
+.PHONY: check install-tests test test-touch test-profiles
 check:
 	$(MAKE) -C little-chef-academy check
 	$(MAKE) -C burbujas check
 	node --check tests/catalogue-chef.spec.cjs
+	node --check learning-profile.js
+	node --check profiles.js
+	node --check tests/profile-settings.spec.cjs
 
 install-tests:
 	npm ci
@@ -16,6 +31,9 @@ test:
 
 test-touch:
 	npx --no-install playwright test tests/long-press.spec.cjs
+
+test-profiles:
+	npx --no-install playwright test tests/profile-settings.spec.cjs
 
 help:
 	@echo "Games monorepo"

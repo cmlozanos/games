@@ -47,13 +47,13 @@ function worker(options = {}) {
     const offlineIndex = {ok: true, label: 'offline-index'};
     const cachedGate = {ok: true, label: 'cached-gate'};
     cache.set(new URL('./index.html', scope).href, offlineIndex);
-    cache.set(new URL('./learning-gate.js?v=20260927-2', scope).href, cachedGate);
+    cache.set(new URL('./learning-gate.js?v=20260928-1', scope).href, cachedGate);
     let skipped = false, installed = [];
     const sandbox = {URL, self: {registration: {scope}, addEventListener: (name, handler) => events[name] = handler,
         skipWaiting: () => {skipped = true; return Promise.resolve();}, clients: {claim: () => Promise.resolve()}},
-        caches: {keys: () => Promise.resolve(['other-game-sentinel', 'burbujas-old', 'burbujas-20260927-2']),
+        caches: {keys: () => Promise.resolve(['other-game-sentinel', 'burbujas-old', 'burbujas-20260928-1']),
             delete: name => {deleted.push(name); return Promise.resolve(true);},
-            open: name => {assert.equal(name, 'burbujas-20260927-2');return Promise.resolve({
+            open: name => {assert.equal(name, 'burbujas-20260928-1');return Promise.resolve({
                 addAll: urls => {installed = Array.from(urls);return options.failedGate ? Promise.reject(Error('gate unavailable')) : Promise.resolve();},
                 match: request => Promise.resolve(cache.get(new URL(typeof request === 'string' ? request : request.url, scope).href)),
                 put: () => {throw Error('Do not mix newer online resources into the installed cache');}
@@ -74,18 +74,18 @@ function worker(options = {}) {
     assert.equal(online.skipped(), true);
     for (const url of online.installed()) assert.ok(fs.existsSync(path.join(root, url.split('?')[0])), url + ' exists');
     for (const file of ['styles.css', 'learning-gate.js', 'src/core.js', 'src/render.js', 'src/app.js']) {
-        assert.ok(online.installed().includes('./' + file + '?v=20260927-2'), file + ' versioned and cached');
+        assert.ok(online.installed().includes('./' + file + '?v=20260928-1'), file + ' versioned and cached');
     }
     let activation;online.events.activate({waitUntil: promise => activation = promise});await activation;
     assert.deepEqual(online.deleted, ['burbujas-old']);
     assert.equal((await online.fetch('./', 'navigate')).label, 'network');
-    assert.equal(await online.fetch('./learning-gate.js?v=20260927-2'), online.cachedGate);
+    assert.equal(await online.fetch('./learning-gate.js?v=20260928-1'), online.cachedGate);
     assert.equal((await online.fetch('./learning-gate.js?v=new-version')).label, 'network', 'no old/new query mixing');
     assert.equal(online.fetch('../another-game/', 'navigate'), undefined, 'other game ignored');
     assert.equal(online.fetch('./', 'navigate', 'POST'), undefined, 'non-GET ignored');
     const offline = worker({offline: true});
     assert.equal(await offline.fetch('./', 'navigate'), offline.offlineIndex);
-    assert.equal(await offline.fetch('./learning-gate.js?v=20260927-2'), offline.cachedGate);
+    assert.equal(await offline.fetch('./learning-gate.js?v=20260928-1'), offline.cachedGate);
     await assert.rejects(offline.fetch('./learning-gate.js?v=new-version'), /offline/, 'missing gate fails rather than bypassing it');
     const broken = worker({failedGate: true});let failedInstallation;
     broken.events.install({waitUntil: promise => failedInstallation = promise});
