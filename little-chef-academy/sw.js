@@ -1,15 +1,15 @@
-const CACHE_NAME = 'little-chef-academy-v9-20260925-2';
+const CACHE_NAME = 'little-chef-academy-v9-20260927-2';
 const ASSETS = [
   './',
   './index.html',
-  './learning-gate.js?v=20260925-2',
+  './learning-gate.js?v=20260927-2',
   './vendor/three.module.js',
-  './styles.css?v=20260925-2',
+  './styles.css?v=20260927-2',
   './manifest.json',
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
-  './src/main.js?v=20260925-2',
+  './src/main.js?v=20260927-2',
   './src/locales.js',
   './src/recipes.js'
 ];

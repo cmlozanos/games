@@ -20,6 +20,12 @@ modo ligero predeterminado e instalación PWA. [Código y pruebas](burbujas/READ
 
 ## Desarrollo
 
+La corrección solicitada el 27-09-2026 evita menús de pulsación larga y selección
+accidental en el catálogo, Little Chef y Burbujas. Conserva la edición de los
+campos y no cancela globalmente los gestos táctiles. `make test-touch` verifica
+la protección y las excepciones; admite `CHROME95_PATH`. Los recursos y sus
+cachés se publican con la versión `20260927-2`.
+
 `make install-tests` instala únicamente dependencias de desarrollo.
 `make check` valida Little Chef, Burbujas y los tests del catálogo; `make test` ejecuta
 la prueba de navegador. `CHROME95_PATH=/ruta/al/Chromium95 make test` permite

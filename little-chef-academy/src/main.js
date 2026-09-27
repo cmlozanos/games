@@ -1,3 +1,17 @@
+// Keep touch holds inside the game; preserve desktop menus and editable fields.
+(function () {
+  var lastTouch = -Infinity;
+  function rememberTouch(event) {
+    if (event.type === 'touchstart' || event.pointerType === 'touch') lastTouch = Date.now();
+  }
+  document.addEventListener('touchstart', rememberTouch, { capture: true, passive: true });
+  document.addEventListener('pointerdown', rememberTouch, { capture: true, passive: true });
+  document.addEventListener('contextmenu', function (event) {
+    var editable = event.target && event.target.closest && event.target.closest('input,textarea,select,[contenteditable]:not([contenteditable="false"])');
+    if (!editable && (event.pointerType === 'touch' || Date.now() - lastTouch < 2000)) event.preventDefault();
+  }, true);
+}());
+
 import * as THREE from 'three';
 import { translate } from './locales.js';
 import { COLORS, INGREDIENTS, RECIPES } from './recipes.js';

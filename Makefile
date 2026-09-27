@@ -2,7 +2,7 @@ GIT_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 
 .DEFAULT_GOAL := help
 
-.PHONY: check install-tests test
+.PHONY: check install-tests test test-touch
 check:
 	$(MAKE) -C little-chef-academy check
 	$(MAKE) -C burbujas check
@@ -13,6 +13,9 @@ install-tests:
 
 test:
 	npm test
+
+test-touch:
+	npx --no-install playwright test tests/long-press.spec.cjs
 
 help:
 	@echo "Games monorepo"

@@ -1,13 +1,13 @@
 'use strict';
-const CACHE_NAME = 'burbujas-20260925-1';
+const CACHE_NAME = 'burbujas-20260927-2';
 const PRECACHE_URLS = [
     './',
     './index.html',
-    './styles.css?v=20260925-1',
-    './learning-gate.js?v=20260925-1',
-    './src/core.js?v=20260925-1',
-    './src/render.js?v=20260925-1',
-    './src/app.js?v=20260925-1',
+    './styles.css?v=20260927-2',
+    './learning-gate.js?v=20260927-2',
+    './src/core.js?v=20260927-2',
+    './src/render.js?v=20260927-2',
+    './src/app.js?v=20260927-2',
     './manifest.webmanifest',
     './icons/icon.svg',
     './icons/icon-192.png',

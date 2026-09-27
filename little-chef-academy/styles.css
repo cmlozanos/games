@@ -1010,3 +1010,7 @@ body.is-playing #app-shell {
     bottom: max(0.55rem, env(safe-area-inset-bottom));
   }
 }
+
+/* Long presses must not open touch callouts or select game artwork. */
+body { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+input, textarea, select, [contenteditable]:not([contenteditable="false"]) { -webkit-touch-callout: default; -webkit-user-select: text; user-select: text; }
