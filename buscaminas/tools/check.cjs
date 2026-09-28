@@ -32,8 +32,8 @@ function worker(options={}) {
   stored.set(new URL('./index.html',scope).href,{label:'offline-index'});
   stored.set(new URL('./src/core.js?v=20260928-3',scope).href,{label:'versioned-core'});
   const sandbox={URL,self:{registration:{scope},addEventListener:(type,fn)=>events[type]=fn,skipWaiting:()=>{skipped=true;return Promise.resolve();},clients:{claim:()=>Promise.resolve()}},
-    caches:{keys:()=>Promise.resolve(['buscaminas-old','burbujas-other','buscaminas-20260928-3']),delete:name=>{deleted.push(name);return Promise.resolve(true);},open:async name=>{
-      assert.equal(name,'buscaminas-20260928-3');return {addAll:async urls=>{installed=Array.from(urls);if(options.broken)throw Error('missing mandatory gate');},match:async request=>stored.get(new URL(typeof request==='string'?request:request.url,scope).href)};
+    caches:{keys:()=>Promise.resolve(['buscaminas-old','burbujas-other','buscaminas-20260928-4']),delete:name=>{deleted.push(name);return Promise.resolve(true);},open:async name=>{
+      assert.equal(name,'buscaminas-20260928-4');return {addAll:async urls=>{installed=Array.from(urls);if(options.broken)throw Error('missing mandatory gate');},match:async request=>stored.get(new URL(typeof request==='string'?request:request.url,scope).href)};
     }},fetch:async request=>{if(options.offline)throw Error('offline');return{ok:!options.failedNavigation,label:'network'};}};
   vm.runInNewContext(read('sw.js'),sandbox);
   function fetch(url,mode='cors',method='GET') {let response;events.fetch({request:{url:new URL(url,scope).href,mode,method},respondWith:value=>response=value});return response;}

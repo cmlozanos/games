@@ -1,9 +1,9 @@
 'use strict';
-var CACHE_NAME = 'buscaminas-20260928-3';
+var CACHE_NAME = 'buscaminas-20260928-4';
 var PRECACHE_URLS = [
   './', './index.html', './styles.css?v=20260928-3',
   './src/core.js?v=20260928-3', './src/app.js?v=20260928-3', './pwa.js?v=20260928-3',
-  './learning-profile.js?v=20260928-1', './reading-words.js?v=20260928-1', './learning-gate.js?v=20260928-1',
+  './learning-profile.js?v=20260928-4', './reading-words.js?v=20260928-1', './learning-gate.js?v=20260928-4',
   './manifest.webmanifest', './icon.svg', './icons/icon-192.png', './icons/icon-512.png',
   './credits.html', './LICENSE', './THIRD_PARTY.md', './READING_ASSETS.md', './READING_WORDS.md', './reading-images/manifest.json'
 ];

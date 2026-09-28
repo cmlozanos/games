@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎮 Games - cmlozanos</title>
-  <link rel="stylesheet" href="./profiles.css?v=20260928-1">
+  <link rel="stylesheet" href="./profiles.css?v=20260928-4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -163,21 +163,22 @@ input, textarea, select, [contenteditable]:not([contenteditable="false"]) { -web
       <form id="profile-form">
         <fieldset class="profile-levels">
           <legend>Perfil</legend>
+          <p class="profile-note">Un punto de partida. Después puedes elegir cualquier combinación de retos.</p>
           <label><input type="radio" name="profile-level" value="learner" checked> Aprendiz</label>
           <label><input type="radio" name="profile-level" value="advanced"> Avanzado</label>
         </fieldset>
         <fieldset class="profile-challenges">
           <legend>Retos posibles</legend>
-          <p class="profile-note">Se elige un solo reto al azar al entrar y cada diez minutos. Estos tres siempre siguen disponibles:</p>
-          <div class="profile-minimums">
-            <label><input type="checkbox" checked disabled> Sumas</label>
-            <label><input type="checkbox" checked disabled> Restas</label>
-            <label><input type="checkbox" checked disabled> Trazos</label>
+          <p class="profile-note" id="profile-challenges-help">Elige uno o varios. Siempre debe quedar al menos uno marcado. Se elige un reto entre los marcados al entrar y cada diez minutos.</p>
+          <div class="profile-options" aria-describedby="profile-challenges-help">
+            <label><input id="profile-addition" name="profile-challenge" value="addition" type="checkbox" checked> Sumas</label>
+            <label><input id="profile-subtraction" name="profile-challenge" value="subtraction" type="checkbox" checked> Restas</label>
+            <label><input id="profile-trace" name="profile-challenge" value="trace" type="checkbox" checked> Trazos</label>
+            <label><input id="profile-reading" name="profile-challenge" value="reading" type="checkbox"> Lectura con imágenes</label>
           </div>
-          <label class="profile-reading"><input id="profile-reading" type="checkbox"> Añadir lectura con imágenes</label>
-          <p class="profile-note">Palabras en minúsculas de hasta cinco letras. La lectura se añade: no sustituye los retos anteriores.</p>
+          <p class="profile-note">Lectura: palabras en minúsculas de hasta cinco letras.</p>
         </fieldset>
-        <p class="profile-note">Para la Lenovo, elige Avanzado y guarda aquí una vez. Si no hay perfil guardado, se usan solo los retos mínimos.</p>
+        <p class="profile-note">Guarda la selección en cada tablet. Sin perfil guardado se usan sumas, restas y trazos.</p>
         <div class="profile-actions">
           <button type="submit" id="profile-save">Guardar en esta tablet</button>
           <button type="button" id="profile-clear">Borrar perfil</button>
@@ -243,8 +244,8 @@ input, textarea, select, [contenteditable]:not([contenteditable="false"]) { -web
 
   </main>
 
-  <script src="./learning-profile.js?v=20260928-1"></script>
-  <script src="./profiles.js?v=20260928-1"></script>
+  <script src="./learning-profile.js?v=20260928-4"></script>
+  <script src="./profiles.js?v=20260928-4"></script>
   <script>
 // Keep touch holds inside the game; preserve desktop menus and editable fields.
 (function () {

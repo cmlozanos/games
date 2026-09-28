@@ -37,9 +37,10 @@ No se copian la analítica, fuentes, CDN, imágenes ni página del proyecto orig
 ## Retos y privacidad
 
 Se reutiliza el componente educativo sin modificarlo: un reto al entrar y cada
-600.000 ms de reloj real, aunque se oculte la aplicación. Los mínimos son sumas,
-restas y trazos. La lectura de 100 palabras cortas se añade según el perfil de
-Games; sin cookie válida se mantienen los mínimos. Durante el reto no se puede
+600.000 ms de reloj real, aunque se oculte la aplicación. En Games se eligen de uno
+a cuatro tipos: sumas, restas, trazos y lectura de 100 palabras cortas. Solo se
+proponen los seleccionados; sin cookie válida se usan sumas, restas y trazos.
+Durante el reto no se puede
 actuar sobre el tablero y se detiene el sonido. Al resolverlo se conservan las
 casillas y el modo elegidos; si falta el componente, el juego queda bloqueado.
 
@@ -57,8 +58,9 @@ con Web Audio y se detienen al ocultar, salir o bloquear el juego.
 
 La PWA funciona con HTTPS y se instala con ámbito `./`. La primera carga debe
 completarse con conexión; precarga el juego, los retos y los 100 PNG de lectura
-(935.825 bytes). Los archivos propios usan versión `20260928-3`; el componente
-compartido mantiene su versión `20260928-1`.
+(935.825 bytes). Los archivos de juego usan versión `20260928-3`; perfil y reto
+usan `20260928-4`, y el banco de palabras conserva `20260928-1`. La caché del juego
+se actualiza a `buscaminas-20260928-4` para aplicar las nuevas preferencias offline.
 
 La caché conserva versiones exactas: no sirve un JS antiguo como uno nuevo ni
 devuelve HTML para un script ausente. Una instalación incompleta no activa la

@@ -135,7 +135,7 @@ async function run(browser,url,size,full,local) {
       await page.waitForTimeout(400);assert.equal(await page.evaluate(()=>__changes),0,'no board redraws while idle');
     }
     await page.evaluate(()=>navigator.serviceWorker.ready);await expect.poll(()=>page.evaluate(()=>!!navigator.serviceWorker.controller),{timeout:20000}).toBe(true);
-    const images=await page.evaluate(async()=>{const cache=await caches.open('buscaminas-20260928-3');return(await cache.keys()).filter(r=>/reading-images\/\d+\.png$/.test(new URL(r.url).pathname)).length;});assert.equal(images,100);
+    const images=await page.evaluate(async()=>{const cache=await caches.open('buscaminas-20260928-4');return(await cache.keys()).filter(r=>/reading-images\/\d+\.png$/.test(new URL(r.url).pathname)).length;});assert.equal(images,100);
     // WebKit's emulated offline mode errors before SW navigation. Cutting the
     // local server responses instead exercises the real failed-network fallback.
     if(process.env.BROWSER==='webkit')local.setUnavailable(true);

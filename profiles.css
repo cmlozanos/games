@@ -9,12 +9,10 @@
 .profile-note { color: #becce0; font-size: .9rem; }
 .profile-panel fieldset { margin: 1rem 0; padding: 0; border: 0; min-width: 0; }
 .profile-panel legend { margin-bottom: .5rem; font-weight: 700; }
-.profile-levels, .profile-minimums { display: flex; flex-wrap: wrap; gap: .4rem 1rem; }
+.profile-levels, .profile-options { display: flex; flex-wrap: wrap; gap: .4rem 1rem; }
 .profile-panel label { display: inline-flex; align-items: center; gap: .6rem; min-height: 44px; cursor: pointer; }
 .profile-panel input { width: 20px; height: 20px; flex: none; accent-color: #f9ca24; }
-.profile-minimums { margin: .3rem 0 .5rem; color: #becce0; }
-.profile-minimums label { cursor: default; }
-.profile-reading { font-weight: 700; }
+.profile-options { margin: .3rem 0 .5rem; }
 .profile-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
 .profile-actions button { padding: .6rem .9rem; border: 1px solid #667a95; border-radius: 10px; color: #e3ebf8; background: transparent; }
 #profile-save { border-color: #f9ca24; background: #f9ca24; color: #17213a; font-weight: 700; }

@@ -14,24 +14,32 @@ La base de datos y el repositorio privados antiguos permanecen intactos.
 ## Perfiles y retos
 
 El botón «Perfiles y retos» permite configurar este navegador, sin cuentas,
-nombres ni detección del modelo de tablet. Aprendiz propone los retos mínimos;
-Avanzado añade lectura. La lectura se puede seleccionar en ambos perfiles y
-nunca elimina sumas, restas o trazos. Se guarda solo al pulsar «Guardar en esta
+nombres ni detección del modelo de tablet. Aprendiz propone sumas, restas y trazos;
+Avanzado propone los cuatro tipos, incluyendo lectura. Todos se pueden marcar o
+desmarcar: **mínimo uno, máximo los cuatro**. No hay casillas bloqueadas. Para usar
+solo lectura, márcala y desmarca las demás. Se guarda solo al pulsar «Guardar en esta
 tablet», con una cookie de un año compartida por los juegos de este mismo sitio.
 Si falta la cookie, es inválida o ha caducado, se mantienen los retos mínimos.
 La interfaz avisa si el navegador bloquea su escritura. «Borrar perfil» vuelve
-a los mínimos sin borrar el progreso de los juegos.
+a los predeterminados sin borrar el progreso de los juegos. Los perfiles antiguos
+mantienen su selección equivalente y caducidad; no hay que configurarlos de nuevo.
 
 Para la Lenovo hay que configurarlo una vez desde su navegador. El perfil no
 se sincroniza con otros dispositivos ni equivale a una cuenta de niño. No es un
 control parental: el catálogo permanece accesible y no se añade contraseña.
-El usuario confirmó este alcance y la selección de un único reto aleatorio
-entre los habilitados antes de implementar esta ampliación.
+El usuario solicitó el 28-09-2026 eliminar los mínimos fijos y permitir cualquier
+combinación no vacía. Se elige un único reto aleatorio exclusivamente entre los
+seleccionados al entrar y cada diez minutos, leyendo de nuevo el perfil en cada bloqueo.
 
-`make test-profiles` comprueba los controles, persistencia, mínimos obligatorios
+`make test-profiles` comprueba los controles, persistencia, las 15 combinaciones,
+la regla de mínimo uno, tipos individuales al entrar y a los diez minutos,
 y cookies ausentes, malformadas, caducadas o bloqueadas. Admite `CHROME95_PATH`;
 los mismos casos se pueden ejecutar en WebKit con
 `npx --no-install playwright test tests/profile-settings.spec.cjs --browser=webkit`.
+
+Perfil y retos usan la versión `20260928-4`, con nuevas cachés locales de cada
+juego y sin cambios en su jugabilidad. Una PWA antigua necesita abrirse con
+conexión y cargar la actualización antes de aplicar las nuevas selecciones.
 
 ## Burbujas
 

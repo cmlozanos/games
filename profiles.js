@@ -5,7 +5,8 @@
   var panel = document.getElementById('profile-panel');
   var form = document.getElementById('profile-form');
   var levels = form.querySelectorAll('[name="profile-level"]');
-  var reading = document.getElementById('profile-reading');
+  var challenges = form.querySelectorAll('[name="profile-challenge"]');
+  var defaults = ['addition', 'subtraction', 'trace'];
   var status = document.getElementById('profile-status');
   var save = document.getElementById('profile-save');
   var clear = document.getElementById('profile-clear');
@@ -17,7 +18,15 @@
   function showProfile(profile) {
     var level = profile ? profile.level : 'learner';
     for (var i = 0; i < levels.length; i++) levels[i].checked = levels[i].value === level;
-    reading.checked = !!(profile && profile.reading);
+    showChallenges(profile ? profile.challenges : defaults);
+  }
+  function showChallenges(selected) {
+    for (var i = 0; i < challenges.length; i++) challenges[i].checked = selected.indexOf(challenges[i].value) !== -1;
+  }
+  function selectedChallenges() {
+    var selected = [];
+    for (var i = 0; i < challenges.length; i++) if (challenges[i].checked) selected.push(challenges[i].value);
+    return selected;
   }
 
   toggle.hidden = false;
@@ -35,15 +44,29 @@
   showProfile(api.read());
   for (var i = 0; i < levels.length; i++) {
     levels[i].addEventListener('change', function () {
-      reading.checked = this.value === 'advanced';
+      showChallenges(this.value === 'advanced' ? defaults.concat(['reading']) : defaults);
       message('Cambios sin guardar.', false);
     });
   }
-  reading.addEventListener('change', function () { message('Cambios sin guardar.', false); });
+  for (var j = 0; j < challenges.length; j++) {
+    challenges[j].addEventListener('change', function () {
+      if (!selectedChallenges().length) {
+        this.checked = true;
+        message('Elige al menos un reto. Marca otro antes de quitar este.', true);
+        return;
+      }
+      message('Cambios sin guardar.', false);
+    });
+  }
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     var level = form.querySelector('[name="profile-level"]:checked').value;
-    if (api.save({ level: level, reading: reading.checked })) {
+    var selected = selectedChallenges();
+    if (!selected.length) {
+      message('Elige al menos un reto para guardar el perfil.', true);
+      return;
+    }
+    if (api.save({ level: level, challenges: selected })) {
       message('Perfil guardado en este navegador. Se aplicará al próximo reto.', false);
     } else {
       message('No se ha guardado el perfil. Este navegador no permite guardar la cookie. Revisa sus ajustes; no se han confirmado los cambios.', true);
