@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f6f8f2">
+  <meta name="description" content="Un pequeño tablero, grandes descubrimientos. Buscaminas con controles sencillos y un reto para aprender.">
+  <title>Buscaminas · Games</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css?v=20260928-3">
+</head>
+<body>
+  <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10h-6v-6H9v6H3Z"/></symbol>
+    <symbol id="i-reveal" viewBox="0 0 24 24"><path d="M9 12V5a2 2 0 0 1 4 0v6l2-1 6 3-2 8H9l-6-6a2 2 0 0 1 3-3Z"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 21V3m0 1c5-4 7 4 13 0v10c-6 4-8-4-13 0M3 21h6"/></symbol>
+    <symbol id="i-restart" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 3v7h7"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M3 9h4l5-5v16l-5-5H3ZM16 8a6 6 0 0 1 0 8M19 4a11 11 0 0 1 0 16"/></symbol>
+    <symbol id="i-mine" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2M10 9h.01"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M20 3C7 2 2 7 5 15c7 6 16 0 15-12ZM3 21 15 9"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  </defs></svg>
+  <div class="app">
+    <header class="toolbar">
+      <a id="home-link" class="icon-button" href="https://cmlozanos.github.io/games/" aria-label="Volver a todos los juegos" title="Todos los juegos"><svg aria-hidden="true"><use href="#i-home"/></svg></a>
+      <div class="brand"><span class="brand-spark" aria-hidden="true">✦</span> buscaminas</div>
+      <button id="sound" class="icon-button sound-off" type="button" aria-label="Activar sonido" aria-pressed="false" title="Activar sonido" disabled><svg aria-hidden="true"><use href="#i-sound"/></svg><span class="mute-slash" aria-hidden="true"></span></button>
+    </header>
+
+    <main id="game" class="game" aria-label="Buscaminas">
+      <div class="heading">
+        <div><h1>¡A descubrir!</h1><p>Cada número es una pista.</p></div>
+        <span class="heading-leaf" aria-hidden="true"><svg><use href="#i-leaf"/></svg></span>
+      </div>
+
+      <div class="game-settings">
+        <div class="difficulty" role="group" aria-label="Tamaño del tablero">
+          <button id="easy" type="button" class="size-button" aria-pressed="true" aria-label="Tablero de 6 por 6, 5 minas" disabled>6 × 6</button>
+          <button id="advanced" type="button" class="size-button" aria-pressed="false" aria-label="Tablero de 8 por 8, 10 minas" disabled>8 × 8</button>
+        </div>
+        <button id="restart" class="icon-button" type="button" aria-label="Empezar de nuevo" title="Empezar de nuevo" disabled><svg aria-hidden="true"><use href="#i-restart"/></svg></button>
+      </div>
+
+      <section class="board-card" aria-label="Partida">
+        <div class="board-info">
+          <span id="flag-metric" class="metric" aria-label="0 banderas de 5 minas"><svg aria-hidden="true"><use href="#i-flag"/></svg><b id="flag-count" aria-hidden="true">0 / 5</b></span>
+          <span id="safe-metric" class="metric safe-metric" aria-label="31 casillas seguras por descubrir"><svg aria-hidden="true"><use href="#i-leaf"/></svg><b id="safe-count" aria-hidden="true">31</b><span aria-hidden="true">por descubrir</span></span>
+        </div>
+        <div id="board-frame" class="board-frame">
+          <div id="board" class="board" role="grid" aria-label="Tablero de Buscaminas" aria-describedby="board-help" aria-rowcount="6" aria-colcount="6"></div>
+        </div>
+      </section>
+
+      <div class="mode-picker" role="group" aria-label="Acción al tocar una casilla">
+        <button id="reveal-mode" class="mode-button" type="button" aria-pressed="true" disabled><svg aria-hidden="true"><use href="#i-reveal"/></svg><span>Descubrir</span></button>
+        <button id="flag-mode" class="mode-button flag-mode" type="button" aria-pressed="false" disabled><svg aria-hidden="true"><use href="#i-flag"/></svg><span>Bandera</span></button>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite" aria-atomic="true">Preparando el reto…</p>
+      <p id="board-help" class="sr-only">Cada número indica cuántas minas hay alrededor. Descubre las casillas seguras y marca las minas con banderas. El primer toque y sus casillas vecinas son seguros. Usa las flechas para moverte, Intro o espacio para actuar y F para cambiar de modo.</p>
+
+      <section id="result" class="result" aria-label="Resultado de la partida" hidden>
+        <svg id="result-icon" class="result-icon" aria-hidden="true"><use href="#i-star"/></svg>
+        <h2 id="result-title"></h2>
+        <div class="result-actions">
+          <button id="retry" class="action-button secondary" type="button"><svg aria-hidden="true"><use href="#i-restart"/></svg><span>Otra vez</span></button>
+          <button id="next" class="action-button" type="button" aria-label="Jugar el siguiente tablero de 8 por 8"><span>8 × 8</span><svg aria-hidden="true"><use href="#i-next"/></svg></button>
+        </div>
+      </section>
+      <footer class="footer"><a href="credits.html">Créditos</a></footer>
+    </main>
+  </div>
+  <noscript><p class="noscript">Activa JavaScript para resolver el reto y jugar.</p></noscript>
+  <script src="learning-profile.js?v=20260928-1"></script>
+  <script src="reading-words.js?v=20260928-1"></script>
+  <script src="learning-gate.js?v=20260928-1"></script>
+  <script src="src/core.js?v=20260928-3"></script>
+  <script src="src/app.js?v=20260928-3"></script>
+  <script src="pwa.js?v=20260928-3"></script>
+</body>
+</html>

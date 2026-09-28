@@ -24,7 +24,7 @@ test('no profile uses minimums, fits a narrow phone and preserves catalogue link
   await expect(page.getByRole('checkbox',{name:'Añadir lectura con imágenes'})).not.toBeChecked();
   expect(await page.evaluate(()=>window.LearningProfile.read())).toBeNull();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  await expect(page.locator('main a')).toHaveCount(17);
+  await expect(page.locator('main a')).toHaveCount(18);
   await expect(page.locator('#learning-gate')).toHaveCount(0);
   await page.getByRole('button',{name:'Perfiles y retos',exact:true}).click();
   await expect(page.locator('#profile-panel')).toBeHidden();
@@ -129,5 +129,21 @@ test('Games saves a shared profile and Burbujas uses its reading challenge befor
   await expect(page.locator('#learning-gate')).toHaveCount(0);
   await page.locator('#play').click();
   await expect(page.locator('#menu')).toBeHidden();
+  await page.evaluate(()=>navigator.serviceWorker.ready);
+});
+
+test('Games profile also enables reading in the new Buscaminas',async({page})=>{
+  await page.addInitScript(()=>{Math.random=()=>.99;});
+  await openSettings(page);
+  await page.getByRole('radio',{name:'Avanzado',exact:true}).check();
+  await page.getByRole('button',{name:'Guardar en esta tablet'}).click();
+  await expect(page.getByRole('status')).toContainText('Perfil guardado');
+  await page.locator('main a[href="./buscaminas/"]').click();
+  await expect(page.locator('#gate-word')).toBeVisible();
+  const word=await page.locator('#gate-word').textContent();
+  await page.getByRole('button',{name:word,exact:true}).click();
+  await expect(page.locator('#learning-gate')).toHaveCount(0);
+  await expect(page.locator('#board [data-cell]')).toHaveCount(36);
+  await expect(page.locator('#board [data-cell="0"]')).toBeEnabled();
   await page.evaluate(()=>navigator.serviceWorker.ready);
 });

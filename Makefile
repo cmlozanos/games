@@ -18,6 +18,7 @@ GIT_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 check:
 	$(MAKE) -C little-chef-academy check
 	$(MAKE) -C burbujas check
+	$(MAKE) -C buscaminas check
 	node --check tests/catalogue-chef.spec.cjs
 	node --check learning-profile.js
 	node --check profiles.js

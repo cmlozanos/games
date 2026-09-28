@@ -40,6 +40,18 @@ de una base MIT, con gráficos propios, rebotes, grupos de tres, caída de grupo
 sin apoyo y techo descendente. Incluye retos educativos, sonido inicial apagado,
 modo ligero predeterminado e instalación PWA. [Código y pruebas](burbujas/README.md).
 
+## Buscaminas
+
+[Jugar a Buscaminas](https://cmlozanos.github.io/games/buscaminas/): adaptación
+MIT de Emoji Minesweeper, con créditos y gráficos propios. Incluye tableros
+6×6/5 minas y 8×8/10 minas, primer toque y vecinos seguros, botones para
+descubrir/banderas, perfiles y retos cada diez minutos, sonido inicialmente
+apagado y PWA offline. Sin analítica ni recursos remotos durante el juego.
+[Alcance aprobado, licencias y pruebas](buscaminas/README.md).
+Sus herramientas son autónomas: `make -C buscaminas check test-browser`;
+`CHROME95_PATH=/ruta/al/Chromium95 make -C buscaminas test-browser` selecciona
+el motor antiguo. `make -C buscaminas test-published` valida la URL desplegada.
+
 ## Desarrollo
 
 La corrección solicitada el 27-09-2026 evita menús de pulsación larga y selección
@@ -49,7 +61,7 @@ la protección y las excepciones; admite `CHROME95_PATH`. Los recursos y sus
 cachés se publican con la versión `20260927-2`.
 
 `make install-tests` instala únicamente dependencias de desarrollo.
-`make check` valida Little Chef, Burbujas y los tests del catálogo; `make test` ejecuta
+`make check` valida Little Chef, Burbujas, Buscaminas y los tests del catálogo; `make test` ejecuta
 la prueba de navegador. `CHROME95_PATH=/ruta/al/Chromium95 make test` permite
 repetirla con el motor antiguo. Little Chef tiene sus comandos específicos en
 su propio Makefile, incluidos `check`, `serve` e `icons`.

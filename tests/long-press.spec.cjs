@@ -1,7 +1,7 @@
 const {test,expect}=require('@playwright/test');
 const {solveGate}=require('./helpers/learning-fixture.cjs');
 
-for(const game of ['','little-chef-academy/','burbujas/']) test((game||'catalogue')+': touch context menu and editing',async({page})=>{
+for(const game of ['','little-chef-academy/','burbujas/','buscaminas/']) test((game||'catalogue')+': touch context menu and editing',async({page})=>{
   await page.addInitScript(()=>{Math.random=()=>.1;});
   await page.goto('/'+game);
   await solveGate(page);

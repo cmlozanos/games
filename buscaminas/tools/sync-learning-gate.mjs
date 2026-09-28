@@ -6,9 +6,9 @@ import vm from 'node:vm';
 import {createHash} from 'node:crypto';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-const targets=['burbujas','little-chef-academy','buscaminas'];
+const targets=['.'];
 const canonical=null;
-const catalogue=true;
+const catalogue=false;
 const check=process.argv.includes('--check');
 const sourceIndex=process.argv.indexOf('--source');
 const source=sourceIndex>=0&&process.argv[sourceIndex+1]?resolve(process.argv[sourceIndex+1]):canonical;
