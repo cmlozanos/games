@@ -50,11 +50,18 @@ async function tapCell(page,index) {
   const cell=page.locator('[data-cell="'+index+'"]');await cell.scrollIntoViewIfNeeded();
   const box=await cell.boundingBox();await page.touchscreen.tap(box.x+box.width/2,box.y+box.height/2);
 }
+async function setting(page,id) {
+  await page.getByRole('button',{name:'Para adultos',exact:true}).click();
+  const [a,b]=(await page.locator('family-v2-shell').locator('#gate-label').textContent()).match(/\d+/g).map(Number);
+  await page.getByRole('textbox',{name:'Resultado de la multiplicación'}).fill(String(a*b));await page.getByRole('button',{name:'Entrar',exact:true}).click();
+  await page.locator('#'+id).click();await page.getByRole('button',{name:'Cerrar',exact:true}).click();
+}
 async function layout(page, label) {
+  await expect.poll(()=>page.evaluate(()=>parseInt(getComputedStyle(document.documentElement).getPropertyValue('--family-height')))).toBe(page.viewportSize().height);
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),label+' no body horizontal overflow');
   if(page.viewportSize().width===1280&&page.viewportSize().height===800)
     assert(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+1),label+' tablet landscape fits without vertical scrolling');
-  for(const selector of ['#home-link','#sound','#easy','#advanced','#restart','#reveal-mode','#flag-mode','#board [data-cell="0"]']) {
+  for(const selector of ['#home-link','#easy','#advanced','#restart','#reveal-mode','#flag-mode','#board [data-cell="0"]']) {
     const node=page.locator(selector);await node.scrollIntoViewIfNeeded();const b=await node.boundingBox();
     assert(b.width>=43.9&&b.height>=43.9,label+' '+selector+' >=44px');
     if(!selector.includes('data-cell'))assert(await node.evaluate(n=>n.scrollWidth<=n.clientWidth+1),label+' unclipped control');
@@ -125,17 +132,17 @@ async function run(browser,url,size,full,local) {
     await page.locator('#restart').evaluate(n=>n.click());assert.deepEqual(await state(page),preserved);
     await solve(page);assert.deepEqual(await state(page),preserved);await expect(page.locator('#flag-mode')).toHaveAttribute('aria-pressed','true');
     if(full){
-      await page.locator('#sound').click();await expect(page.locator('#sound')).toHaveAttribute('aria-pressed','true');
+      await setting(page,'sound');await expect(page.locator('#sound')).toHaveAttribute('aria-pressed','true');
       await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange'));});
       await expect.poll(()=>page.evaluate(()=>__audio.every(a=>a.state==='suspended'))).toBe(true);
       await page.locator('#restart').evaluate(n=>n.click());assert.deepEqual(await state(page),preserved,'hidden game ignores actions');
       await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));});
-      await page.locator('#sound').click();
+      await setting(page,'sound');
       await page.evaluate(()=>{window.__changes=0;new MutationObserver(()=>__changes++).observe(document.getElementById('board'),{attributes:true,childList:true,subtree:true});});
       await page.waitForTimeout(400);assert.equal(await page.evaluate(()=>__changes),0,'no board redraws while idle');
     }
     await page.evaluate(()=>navigator.serviceWorker.ready);await expect.poll(()=>page.evaluate(()=>!!navigator.serviceWorker.controller),{timeout:20000}).toBe(true);
-    const images=await page.evaluate(async()=>{const cache=await caches.open('buscaminas-20260928-4');return(await cache.keys()).filter(r=>/reading-images\/\d+\.png$/.test(new URL(r.url).pathname)).length;});assert.equal(images,100);
+    const images=await page.evaluate(async()=>{const cache=await caches.open('buscaminas-v2.0.0-shell2');return(await cache.keys()).filter(r=>/reading-images\/\d+\.png$/.test(new URL(r.url).pathname)).length;});assert.equal(images,100);
     // WebKit's emulated offline mode errors before SW navigation. Cutting the
     // local server responses instead exercises the real failed-network fallback.
     if(process.env.BROWSER==='webkit')local.setUnavailable(true);

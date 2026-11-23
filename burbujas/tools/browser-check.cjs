@@ -82,6 +82,12 @@ async function audioState(page, expected) {
     return states.length > 0 && states.every(state => state === value);
   }, expected)).toBe(true);
 }
+async function setting(page,id) {
+  await page.getByRole('button',{name:'Para adultos',exact:true}).click();
+  const [a,b]=(await page.locator('family-v2-shell').locator('#gate-label').textContent()).match(/\d+/g).map(Number);
+  await page.getByRole('textbox',{name:'Resultado de la multiplicación'}).fill(String(a*b));await page.getByRole('button',{name:'Entrar',exact:true}).click();
+  await page.locator('#'+id).click();await page.getByRole('button',{name:'Cerrar',exact:true}).click();
+}
 async function controlsFit(page, size) {
   for (const id of ['play', 'pause', 'resume', 'restart', 'next', 'retry', 'sound', 'quality']) {
     const button = page.locator('#' + id);
@@ -164,7 +170,7 @@ async function runViewport(browser, url, size, comprehensive) {
       await page.waitForTimeout(1300); // allow finite pop/drop effects to settle
       await frozen(page, 'stationary playing board');
       await page.screenshot({ path: path.join(output, `aim-${size.width}x${size.height}.png`) });
-      await page.locator('#sound').click();
+      await setting(page,'sound');
       assert.equal((await read(page)).sound, true);
       await audioState(page, 'running');
       await page.locator('#board').focus();
@@ -191,14 +197,14 @@ async function runViewport(browser, url, size, comprehensive) {
       assert.equal((await read(page)).locked, false);
       assert.equal((await read(page)).paused, false);
       await audioState(page, 'running');
-      await page.locator('#sound').click(); await audioState(page, 'suspended');
+      await setting(page,'sound'); await audioState(page, 'suspended');
       await page.locator('#pause').click();
       await page.locator('#restart').click();
       for (let i = 0; i < 3; i++) { await page.locator('#pause').click(); await page.locator('#restart').click(); }
       assert.ok(await page.evaluate(() => window.__testPendingRaf()) <= 1, 'restarts must not multiply RAF loops');
       await dragShot(page);
       const beforeQuality = await read(page);
-      await page.locator('#quality').click();
+      await setting(page,'quality');
       assert.equal((await read(page)).light, false);
       assert.equal((await read(page)).shots, beforeQuality.shots, 'quality must not restart the game');
       await page.reload(); await solveGate(page);

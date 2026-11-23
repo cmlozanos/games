@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎮 Games - cmlozanos</title>
   <link rel="stylesheet" href="./profiles.css?v=20260928-4">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -143,8 +140,10 @@
   /* Long presses must not open touch callouts or select game artwork. */
 body { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 input, textarea, select, [contenteditable]:not([contenteditable="false"]) { -webkit-touch-callout: default; -webkit-user-select: text; user-select: text; }
-  </style>
-</head>
+
+html.family-v2 body{background:var(--family-page);color:var(--family-ink)}html.family-v2 .card{background:var(--family-panel);color:var(--family-ink);border-color:var(--family-button)}html.family-v2 .card h2{font-family:var(--family-font);font-size:1.1rem;line-height:1.8}html.family-v2 .card p,html.family-v2 .card .badge{display:none}html.family-v2 header p{display:none}
+</style>
+<link rel="stylesheet" href="family-v2/family.css?v=2.0.0"></head>
 <body>
 
   <header>
@@ -153,7 +152,7 @@ input, textarea, select, [contenteditable]:not([contenteditable="false"]) { -web
   </header>
 
   <section class="profile-settings" aria-label="Ajustes para adultos">
-    <button class="profile-toggle" id="profile-toggle" type="button" aria-label="Perfiles y retos" aria-expanded="false" aria-controls="profile-panel" hidden>
+    <button class="profile-toggle" id="profile-toggle" data-family-setting type="button" aria-label="Perfiles y retos" aria-expanded="false" aria-controls="profile-panel" hidden>
       <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2" fill="#16213e"/><circle cx="16" cy="12" r="2" fill="#16213e"/><circle cx="10" cy="18" r="2" fill="#16213e"/></svg>
       <span>Perfiles y retos</span>
     </button>
@@ -189,6 +188,8 @@ input, textarea, select, [contenteditable]:not([contenteditable="false"]) { -web
   </section>
 
   <main class="grid">
+    <a class="card" href="https://cmlozanos.github.io/cole-aventura/"><span class="emoji" aria-hidden="true">📚</span><h2>Cole Aventura</h2></a>
+
 
     <a class="card" href="./buscaminas/"><span class="emoji" aria-hidden="true"><svg width="64" height="64" viewBox="0 0 64 64"><g fill="#b9e6ce"><rect x="3" y="3" width="27" height="27" rx="6"/><rect x="34" y="3" width="27" height="27" rx="6"/><rect x="3" y="34" width="27" height="27" rx="6"/><rect x="34" y="34" width="27" height="27" rx="6"/></g><path d="M16 25V9l13 5-13 5" stroke="#163c37" stroke-width="3" fill="#ffc566"/><circle cx="47" cy="47" r="6" fill="#163c37"/></svg></span><h2>Buscaminas</h2><p>Descubre las casillas seguras y coloca tus banderas.</p><span class="badge">Lógica · PWA</span></a>
 
@@ -262,5 +263,5 @@ input, textarea, select, [contenteditable]:not([contenteditable="false"]) { -web
 }());
 
   </script>
-</body>
+<script src="family-v2/family.js?v=2.0.0" data-game="games-catalogue" defer></script></body>
 </html>

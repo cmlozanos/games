@@ -25,3 +25,7 @@ stop:
 help:
 	@echo "Little Chef Academy"
 	@echo "  make serve PORT=$(PORT) HOST=$(HOST)"
+
+.PHONY: test-playability
+test-playability:
+	node tools/playability.cjs

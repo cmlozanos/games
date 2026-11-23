@@ -5,3 +5,11 @@
 /* Long presses must not open touch callouts or select game artwork. */
 body { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 input, textarea, select, [contenteditable]:not([contenteditable="false"]) { -webkit-touch-callout: default; -webkit-user-select: text; user-select: text; }
+
+/*2.0 viewport and restrained menu composition.*/
+body,.app{height:var(--family-height,100vh)}
+.toolbar [data-family-slot]{margin-left:auto}.toolbar .brand{font-size:18px}
+html[data-family-theme=light] .app{background:#edf4fb;color:#20374d}html[data-family-theme=light] .toolbar,html[data-family-theme=light] .statusbar{background:#e1ebf5;color:#20374d}
+html.family-no-motion .welcome .panel-icon{animation:none}
+
+@media(max-width:600px){.toolbar{gap:5px;padding-left:6px;padding-right:6px}.toolbar .brand{display:none}.toolbar>a{display:none}.toolbar [data-family-slot]{margin-left:0;margin-right:auto}}

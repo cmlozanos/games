@@ -30,10 +30,10 @@ for (const size of [192,512]) {
 function worker(options={}) {
   const scope='https://example.test/games/buscaminas/', events={}, deleted=[], stored=new Map(); let installed=[], skipped=false;
   stored.set(new URL('./index.html',scope).href,{label:'offline-index'});
-  stored.set(new URL('./src/core.js?v=20260928-3',scope).href,{label:'versioned-core'});
+  stored.set(new URL('./src/core.js?v=2.0.0',scope).href,{label:'versioned-core'});
   const sandbox={URL,self:{registration:{scope},addEventListener:(type,fn)=>events[type]=fn,skipWaiting:()=>{skipped=true;return Promise.resolve();},clients:{claim:()=>Promise.resolve()}},
-    caches:{keys:()=>Promise.resolve(['buscaminas-old','burbujas-other','buscaminas-20260928-4']),delete:name=>{deleted.push(name);return Promise.resolve(true);},open:async name=>{
-      assert.equal(name,'buscaminas-20260928-4');return {addAll:async urls=>{installed=Array.from(urls);if(options.broken)throw Error('missing mandatory gate');},match:async request=>stored.get(new URL(typeof request==='string'?request:request.url,scope).href)};
+    caches:{keys:()=>Promise.resolve(['buscaminas-old','burbujas-other','buscaminas-v2.0.0-shell2']),delete:name=>{deleted.push(name);return Promise.resolve(true);},open:async name=>{
+      assert.equal(name,'buscaminas-v2.0.0-shell2');return {addAll:async urls=>{installed=Array.from(urls);if(options.broken)throw Error('missing mandatory gate');},match:async request=>stored.get(new URL(typeof request==='string'?request:request.url,scope).href)};
     }},fetch:async request=>{if(options.offline)throw Error('offline');return{ok:!options.failedNavigation,label:'network'};}};
   vm.runInNewContext(read('sw.js'),sandbox);
   function fetch(url,mode='cors',method='GET') {let response;events.fetch({request:{url:new URL(url,scope).href,mode,method},respondWith:value=>response=value});return response;}
@@ -43,11 +43,11 @@ function worker(options={}) {
 (async()=>{
   const online=worker();await online.event('install');assert(online.skipped());assert.equal(new Set(online.installed()).size,online.installed().length);
   for(const file of online.installed()) assert(fs.existsSync(path.join(root,file.split('?')[0])),file+' exists');
-  for(const file of ['styles.css','src/core.js','src/app.js','pwa.js']) assert(online.installed().includes('./'+file+'?v=20260928-3'));
+  for(const file of ['styles.css','src/core.js','src/app.js','pwa.js']) assert(online.installed().includes('./'+file+'?v=2.0.0'));
   assert.equal(online.installed().filter(file=>/reading-images\/\d+\.png$/.test(file)).length,100);
   await online.event('activate');assert.deepEqual(online.deleted,['buscaminas-old']);
   assert.equal((await online.fetch('./','navigate')).label,'network');
-  assert.equal((await online.fetch('./src/core.js?v=20260928-3')).label,'versioned-core');
+  assert.equal((await online.fetch('./src/core.js?v=2.0.0')).label,'versioned-core');
   assert.equal((await online.fetch('./src/core.js?v=future')).label,'network');
   assert.equal(online.fetch('../burbujas/','navigate'),undefined);assert.equal(online.fetch('./','navigate','POST'),undefined);
   const offline=worker({offline:true});assert.equal((await offline.fetch('./','navigate')).label,'offline-index');

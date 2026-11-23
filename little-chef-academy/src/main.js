@@ -102,7 +102,9 @@ const state = {
   feedback: ''
 };
 
+let familyFrozen = false, familyWasPaused = false, familyRoundId = 0;
 const gameTimers = LearningGate.createTimers();
+let summaryTimer;
 let educationLocked = true;
 const activeAudio = new Set();
 const educationGate = LearningGate.mount({
@@ -118,13 +120,13 @@ const educationGate = LearningGate.mount({
   onUnlock() {
     clock.getDelta();
     educationLocked = false;
-    gameTimers.resume();
+    if(!familyFrozen)gameTimers.resume();
   }
 });
 
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'default' });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'low-power' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1));
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled = false;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.08;
@@ -164,6 +166,7 @@ function bindEvents() {
   document.addEventListener('visibilitychange', () => { if (document.hidden) state.keys.clear(); });
 
   window.addEventListener('keydown', (event) => {
+    if(event.composedPath&&event.composedPath().some(node=>node.tagName==='FAMILY-V2-SHELL'))return;
     const key = event.key.toLowerCase();
     if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd', ' '].includes(key)) {
       event.preventDefault();
@@ -236,6 +239,7 @@ function startMode(mode) {
   state.roundIndex = 0;
   state.stars = 0;
   state.paused = false;
+  pauseButton.textContent = t('pause');
   state.finalSummary = false;
   menuScreen.hidden = true;
   summaryScreen.hidden = true;
@@ -262,13 +266,19 @@ function rebuildChef() {
 }
 
 function startRound() {
+  gameTimers.clear(summaryTimer);
+  familyRoundId++;
   state.completed = false;
   state.collectedCount = 0;
   state.expectedIndex = 0;
   state.collectedIngredientIds = new Set();
   state.feedback = '';
+  feedbackLabel.textContent = '';
+  state.collectionCooldown = 0;
+  state.keys.clear();
   state.player.x = 0;
   state.player.z = 8.5;
+  chef.position.set(0, 0, 8.5);
   clearItems();
   state.items = createRoundItems(getCurrentRecipe());
   createItemMeshes();
@@ -290,6 +300,7 @@ function startNextRound() {
 }
 
 function showMenu() {
+  gameTimers.clear(summaryTimer);
   document.body.classList.remove('is-playing');
   state.paused = false;
   state.keys.clear();
@@ -300,7 +311,7 @@ function showMenu() {
 
 function loop() {
   educationGate.check();
-  if (educationLocked) { clock.getDelta(); return; }
+  if (educationLocked || familyFrozen || document.hidden) { clock.getDelta(); return; }
   const delta = Math.min(clock.getDelta(), 0.033);
   const elapsed = clock.elapsedTime;
 
@@ -484,10 +495,13 @@ function collectItem(entry, position) {
 }
 
 function completeRound() {
+  if(state.completed)return;
+  if(window.FamilyV2)FamilyV2.award('recipe-'+familyRoundId,1);
   state.completed = true;
   state.stars += 3;
+  updateHud();
   playSuccessMelody();
-  gameTimers.set(showRoundSummary, 800);
+  summaryTimer = gameTimers.set(showRoundSummary, 800);
 }
 
 function showRoundSummary() {
@@ -1007,7 +1021,7 @@ function createSteamParticles() {
 function createRoundItems(recipe) {
   const positions = [
     // Back row (near back counter)
-    [-10.5, -7.5], [-5.5, -8.0], [0, -8.0], [5.5, -8.0], [10.5, -7.5],
+    [-10.5, -7.5], [-5.5, -8.0], [-3.5, -8.0], [5.5, -8.0], [10.5, -7.5],
     // Upper mid (around second island)
     [-8.5, -5.0], [-3.5, -5.0], [3.5, -5.0], [8.5, -5.0],
     // Center (around main island, sides)
@@ -1071,13 +1085,14 @@ function getRequiredItems(recipe) {
 function createItemMeshes() {
   clearItems();
   state.items.forEach((item) => {
+    if(item.collected)return;
     const group = new THREE.Group();
     group.position.set(item.x, 1.55, item.z);  // raise above counters (top ~1.02)
     group.userData.meshId = item.meshId;
 
     const color = new THREE.Color(COLORS[item.color] || '#38bdf8');
     const beam = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.52, 0.52, 1.8, 32, 1, true),
+      new THREE.CylinderGeometry(0.52, 0.52, 1.8, 12, 1, true),
       new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.18, depthWrite: false, side: THREE.DoubleSide })
     );
     beam.position.y = 0.42;
@@ -1325,7 +1340,7 @@ function createTextSprite(text, size = 64, color = '#111827', background = 'rgba
     ctx.fill();
   }
   ctx.fillStyle = color;
-  ctx.font = `900 ${size}px Nunito, Arial, sans-serif`;
+  ctx.font = `400 ${size}px "Family School", cursive`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(text, canvasSize / 2, canvasSize / 2 + canvasSize * 0.051);
@@ -1351,7 +1366,7 @@ function speakCurrentInstruction() {
 }
 
 function speak(message) {
-  if (educationLocked || !state.soundEnabled || !('speechSynthesis' in window) || !message) return;
+  if (educationLocked || familyFrozen || document.hidden || !state.soundEnabled || !('speechSynthesis' in window) || !message) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(message);
   utterance.lang = state.locale === 'es' ? 'es-ES' : 'en-US';
@@ -1361,7 +1376,7 @@ function speak(message) {
 }
 
 function playTone(frequency, duration, type) {
-  if (educationLocked || !state.soundEnabled) return;
+  if (educationLocked || familyFrozen || document.hidden || !state.soundEnabled) return;
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!AudioContext) return;
   const audioContext = new AudioContext();
@@ -1417,11 +1432,11 @@ function hasInput(...keys) {
 }
 
 function saveState() {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+  try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
     locale: state.locale,
     soundEnabled: state.soundEnabled,
     selectedCharacter: state.selectedCharacter
-  }));
+  })); } catch (_) { /* Storage is optional; keep play state in memory. */ }
 }
 
 function loadSavedState() {
@@ -1443,3 +1458,10 @@ function shuffle(values) {
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
+
+function registerFamilyV2() {
+  if(!window.FamilyV2)return;
+  FamilyV2.register({home(){showMenu();},pause(){familyWasPaused=state.paused;familyFrozen=true;state.keys.clear();gameTimers.pause();activeAudio.forEach(ctx=>ctx.close().catch(()=>{}));activeAudio.clear();if(window.speechSynthesis)speechSynthesis.cancel();},resume(){familyFrozen=false;state.paused=familyWasPaused;clock.getDelta();if(!educationLocked)gameTimers.resume();}});
+  FamilyV2.fontReady.then(()=>{rebuildItemLabels();});
+}
+document.addEventListener('DOMContentLoaded',registerFamilyV2);registerFamilyV2();

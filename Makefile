@@ -66,3 +66,9 @@ git-%:
 
 %:
 	@:
+
+.PHONY: check-v2 test-v2
+check-v2:
+	node tools/verify-v2.cjs
+test-v2:
+	npx --no-install playwright test tests/v2/ tests/catalogue-chef.spec.cjs

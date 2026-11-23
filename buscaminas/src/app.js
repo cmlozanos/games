@@ -16,7 +16,7 @@
   var next = document.getElementById('next');
   var controls = [revealMode, flagMode, easy, advanced, restart, sound, retry, next];
   var board, buttons = [], activeIndex = 0, mode = 'reveal';
-  var gate = null, locked = true, gateFailed = false;
+  var gate = null, locked = true, gateFailed = false, familyFrozen = false, roundId = 0;
   var soundEnabled = false, audioContext = null, voices = [];
   var soundGeneration = 0;
 
@@ -69,7 +69,7 @@
   }
 
   function canUseGame() {
-    if (!gate || gateFailed || document.hidden) return false;
+    if (!gate || gateFailed || document.hidden || familyFrozen) return false;
     gate.check();
     return !locked && !gate.isLocked();
   }
@@ -148,6 +148,7 @@
 
   function newBoard(size) {
     stopSound();
+    roundId++;
     board = core.create(size, size, size === 6 ? 5 : 10);
     mode = 'reveal';
     activeIndex = 0;
@@ -188,6 +189,7 @@
     var changed = mode === 'flag' ? core.toggleFlag(board, index) : core.reveal(board, index);
     if (!changed) return;
     render();
+    if(board.status==='won'&&window.FamilyV2)FamilyV2.award('board-'+roundId,1);
     playSound(finished() ? board.status : mode);
   }
 
@@ -246,7 +248,7 @@
     buttons[0].focus();
   });
   sound.addEventListener('click', function () {
-    if (!canUseGame()) return;
+    if (locked || gateFailed) return;
     if (soundEnabled) {
       soundEnabled = false;
       stopSound();
@@ -269,6 +271,9 @@
     if (document.hidden) stopSound();
     if (gate) gate.check();
   });
+  document.getElementById('family-continue').onclick=function(){document.getElementById('family-menu').hidden=true;game.hidden=false;familyFrozen=false;render();};
+  function registerFamily(){if(window.FamilyV2)FamilyV2.register({home:function(){familyFrozen=true;stopSound();game.hidden=true;document.getElementById('family-menu').hidden=false;},pause:function(){familyFrozen=true;stopSound();},resume:function(){familyFrozen=false;}});}
+  document.addEventListener('DOMContentLoaded',registerFamily);registerFamily();
   window.addEventListener('blur', stopSound);
   window.addEventListener('pagehide', stopSound);
 

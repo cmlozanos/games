@@ -91,3 +91,7 @@ arquitectura ni aprovisionado infraestructura o costes.
 [Alcance de esta adaptación](docs/legacy-adaptation.md).
 
 [Optimización para tablets antiguas y criterios para próximos juegos](docs/tablet-performance.md).
+
+## Renovación 2.0
+
+Catálogo y juegos locales incorporan la base infantil común documentada en `docs/V2.md`. Las opciones de sonido/ayuda se trasladan a Adultos (multiplicación); aspecto sigue público. No se borran partidas/perfiles ni se cambia el intervalo educativo. Los motores mantienen sus herramientas locales y precaché independiente. La aceptación incluye jugabilidad y regresiones, no solo cambio de aspecto.

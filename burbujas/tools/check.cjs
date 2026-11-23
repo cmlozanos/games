@@ -51,9 +51,9 @@ function worker(options = {}) {
     let skipped = false, installed = [];
     const sandbox = {URL, self: {registration: {scope}, addEventListener: (name, handler) => events[name] = handler,
         skipWaiting: () => {skipped = true; return Promise.resolve();}, clients: {claim: () => Promise.resolve()}},
-        caches: {keys: () => Promise.resolve(['other-game-sentinel', 'burbujas-old', 'burbujas-20260928-4']),
+        caches: {keys: () => Promise.resolve(['other-game-sentinel', 'burbujas-old', 'burbujas-v2.0.0-shell2']),
             delete: name => {deleted.push(name); return Promise.resolve(true);},
-            open: name => {assert.equal(name, 'burbujas-20260928-4');return Promise.resolve({
+            open: name => {assert.equal(name, 'burbujas-v2.0.0-shell2');return Promise.resolve({
                 addAll: urls => {installed = Array.from(urls);return options.failedGate ? Promise.reject(Error('gate unavailable')) : Promise.resolve();},
                 match: request => Promise.resolve(cache.get(new URL(typeof request === 'string' ? request : request.url, scope).href)),
                 put: () => {throw Error('Do not mix newer online resources into the installed cache');}
@@ -74,7 +74,7 @@ function worker(options = {}) {
     assert.equal(online.skipped(), true);
     for (const url of online.installed()) assert.ok(fs.existsSync(path.join(root, url.split('?')[0])), url + ' exists');
     for (const file of ['styles.css', 'src/core.js', 'src/render.js', 'src/app.js']) {
-        assert.ok(online.installed().includes('./' + file + '?v=20260928-1'), file + ' versioned and cached');
+        assert.ok(online.installed().includes('./' + file + '?v=2.0.0'), file + ' versioned and cached');
     }
     for (const file of ['learning-gate.js','learning-profile.js']) assert.ok(online.installed().includes('./'+file+'?v=20260928-4'),file+' selected challenge version cached');
     let activation;online.events.activate({waitUntil: promise => activation = promise});await activation;

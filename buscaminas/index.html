@@ -9,8 +9,8 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=20260928-3">
-</head>
+  <link rel="stylesheet" href="styles.css?v=2.0.0">
+<link rel="stylesheet" href="family-v2/family.css?v=2.0.0"></head>
 <body>
   <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
     <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10h-6v-6H9v6H3Z"/></symbol>
@@ -24,13 +24,13 @@
     <symbol id="i-next" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
   </defs></svg>
   <div class="app">
-    <header class="toolbar">
-      <a id="home-link" class="icon-button" href="https://cmlozanos.github.io/games/" aria-label="Volver a todos los juegos" title="Todos los juegos"><svg aria-hidden="true"><use href="#i-home"/></svg></a>
+    <header class="toolbar"><span data-family-slot></span>
+      <a id="home-link" class="icon-button" href="https://cmlozanos.github.io/games/" aria-label="Volver a todos los juegos" title="Todos los juegos" data-family-home><svg aria-hidden="true"><use href="#i-home"/></svg></a>
       <div class="brand"><span class="brand-spark" aria-hidden="true">✦</span> buscaminas</div>
-      <button id="sound" class="icon-button sound-off" type="button" aria-label="Activar sonido" aria-pressed="false" title="Activar sonido" disabled><svg aria-hidden="true"><use href="#i-sound"/></svg><span class="mute-slash" aria-hidden="true"></span></button>
+      <button id="sound" data-family-setting class="icon-button sound-off" type="button" aria-label="Activar sonido" aria-pressed="false" title="Activar sonido" disabled><svg aria-hidden="true"><use href="#i-sound"/></svg><span class="mute-slash" aria-hidden="true"></span></button>
     </header>
 
-    <main id="game" class="game" aria-label="Buscaminas">
+    <section id="family-menu" class="family-menu" hidden><h1>Buscaminas</h1><button id="family-continue">▶</button></section><main id="game" class="game" aria-label="Buscaminas">
       <div class="heading">
         <div><h1>¡A descubrir!</h1><p>Cada número es una pista.</p></div>
         <span class="heading-leaf" aria-hidden="true"><svg><use href="#i-leaf"/></svg></span>
@@ -76,8 +76,8 @@
   <script src="learning-profile.js?v=20260928-4"></script>
   <script src="reading-words.js?v=20260928-1"></script>
   <script src="learning-gate.js?v=20260928-4"></script>
-  <script src="src/core.js?v=20260928-3"></script>
-  <script src="src/app.js?v=20260928-3"></script>
-  <script src="pwa.js?v=20260928-3"></script>
-</body>
+  <script src="src/core.js?v=2.0.0"></script>
+  <script src="src/app.js?v=2.0.0"></script>
+  <script src="pwa.js?v=2.0.0"></script>
+<script src="family-v2/family.js?v=2.0.0" data-game="buscaminas" defer></script></body>
 </html>

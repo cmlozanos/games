@@ -8,18 +8,15 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260928-1">
+  <link rel="stylesheet" href="styles.css?v=2.0.0">
   <title>Little Chef Academy</title>
-</head>
+<link rel="stylesheet" href="family-v2/family.css?v=2.0.0"></head>
 <body>
-  <main id="app-shell">
+  <span class="family-shell-slot" data-family-slot></span><main id="app-shell">
     <section id="menu-screen" class="screen menu-screen">
       <div class="hero-card">
         <div class="top-row">
-          <a class="home-link" href="https://cmlozanos.github.io/games/" aria-label="Games">← Games</a>
+          <a class="home-link" href="https://cmlozanos.github.io/games/" aria-label="Games" data-family-home>← Games</a>
           <label class="language-control">
             <span data-i18n="languageLabel">Idioma</span>
             <select id="language-select" aria-label="Language">
@@ -92,8 +89,8 @@
           <span id="score-label">Estrellas: 0 ⭐</span>
         </div>
         <div class="hud-buttons">
-          <button id="speak-button" class="small-button" type="button" data-i18n="speak">Escuchar</button>
-          <button id="sound-button" class="small-button" type="button">Sonido: sí</button>
+          <button id="speak-button" data-family-setting class="small-button" type="button" data-i18n="speak">Escuchar</button>
+          <button id="sound-button" data-family-setting class="small-button" type="button">Sonido: sí</button>
           <button id="pause-button" class="small-button" type="button" data-i18n="pause">Pausa</button>
           <button id="menu-button" class="small-button" type="button" data-i18n="backToMenu">Menú</button>
         </div>
@@ -153,6 +150,6 @@
       });
     }
   </script>
-  <script type="module" src="src/main.js?v=20260928-1"></script>
-</body>
+  <script type="module" src="src/main.js?v=2.0.0"></script>
+<script src="family-v2/family.js?v=2.0.0" data-game="little-chef-academy" defer></script></body>
 </html>

@@ -1,3 +1,7 @@
+# Versión 2.0.0
+
+Base infantil común: letra ligada local, aspecto público, ajustes con multiplicación, puntos locales de sesión y medición de viewport antiguo. Se conservan los retos de entrada/cada diez minutos y datos previos. Sin audio automático. Nueva apertura con conexión actualiza PWA.
+
 # Buscaminas
 
 Juego familiar estático: https://cmlozanos.github.io/games/buscaminas/

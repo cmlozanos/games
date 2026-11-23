@@ -145,3 +145,10 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
   *, *::before, *::after { scroll-behavior: auto !important; }
   .icon-button:active, .action-button:active, .mode-button:active { transform: none; }
 }
+
+/*2.0 visible viewport and public theme, preserving mine count semantics.*/
+body{min-height:0;height:var(--family-height,100vh)}.toolbar [data-family-slot]{margin-left:auto}html[data-family-theme=dark]{--paper:#18263a;--ink:#edf2ff;--muted:#b4c3db}html[data-family-theme=dark] body,html[data-family-theme=dark] .app{background:#18263a;color:#edf2ff}
+
+.family-menu{display:grid;place-content:center;justify-items:center;gap:20px;min-height:50vh}.family-menu button{width:90px;height:70px;background:var(--family-button);border:0;border-radius:20px;font-size:32px;color:var(--family-ink)}
+
+@media(max-width:600px){.toolbar .brand{display:none}.toolbar{gap:6px}.toolbar [data-family-slot]{margin-left:auto}.toolbar #home-link{flex:0 0 44px}}

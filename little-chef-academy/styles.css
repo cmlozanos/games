@@ -1014,3 +1014,12 @@ body.is-playing #app-shell {
 /* Long presses must not open touch callouts or select game artwork. */
 body { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 input, textarea, select, [contenteditable]:not([contenteditable="false"]) { -webkit-touch-callout: default; -webkit-user-select: text; user-select: text; }
+
+/*2.0 readable native UI; WebGL world keeps its palette and mechanics.*/
+body,#app-shell{min-height:0;height:var(--family-height,100vh)}
+html[data-family-theme=dark]{--ink:#edf2ff;--muted:#b9c6d9;--cream:#18263a;--card:#24334b;--shadow:none}
+html.family-v2 .hero-card>p,html.family-v2 .mode-panel>p{display:none}
+
+.family-shell-slot{position:fixed;top:6px;right:8px;z-index:90}#menu-screen .top-row{padding-right:195px}#game-screen .hud-top{padding-right:195px}@media(max-width:600px){.family-shell-slot{top:4px;right:5px}#game-screen .hud-top{padding-top:54px;padding-right:0}#menu-screen .top-row{padding-top:52px;padding-right:0}}
+
+#game-screen .game-hud{padding-right:210px}@media(max-width:600px){#game-screen .game-hud{padding-top:60px;padding-right:12px}}

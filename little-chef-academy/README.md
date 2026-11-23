@@ -1,3 +1,7 @@
+# Versión 2.0.0
+
+Base infantil común: letra ligada local, aspecto público, ajustes con multiplicación, puntos locales de sesión y medición de viewport antiguo. Se conservan los retos de entrada/cada diez minutos y datos previos. Sin audio automático. Nueva apertura con conexión actualiza PWA.
+
 # Little Chef Academy
 
 Educational 3D browser game for children. The implementation uses English names for code, files, and data structures, while all player-facing text is localized in Spanish and English.
@@ -33,3 +37,5 @@ Chrome 95 uses `vh` layout fallbacks and a game-state class instead of CSS `:has
 
 Run `make check` for syntax and offline asset checks; the parent repository's
 `make test` runs browser integration checks.
+
+V2 mechanics corrections: required item on an inaccessible rear position moved to side corridor; completion updates final HUD before summary, pending summaries cancel on Home, and retry restores chef position/feedback/cooldown/pause label. `make test-playability` passes40native rounds/five modes using real key-input simulation, without teleport or forcing victory. It is a simulation/DOM proof, not a physical child's usability assessment.
