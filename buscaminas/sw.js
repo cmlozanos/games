@@ -1,5 +1,5 @@
 'use strict';
-var CACHE_NAME = 'buscaminas-v2.0.0-refinement2';
+var CACHE_NAME = 'buscaminas-v2.0.0-refinement3';
 var PRECACHE_URLS = ['./family-v2/family.js?v=2.0.0','./family-v2/family.css?v=2.0.0','./family-v2/playwrite-es.ttf','./family-v2/OFL.txt',
   './', './index.html', './styles.css?v=2.0.0',
   './src/core.js?v=2.0.0', './src/app.js?v=2.0.0', './pwa.js?v=2.0.0',
