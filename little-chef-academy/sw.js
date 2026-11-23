@@ -1,4 +1,4 @@
-const CACHE_NAME = 'little-chef-academy-v2.0.0-refinement1';
+const CACHE_NAME = 'little-chef-academy-v2.0.0-refinement2';
 const ASSETS = ['./family-v2/family.js?v=2.0.0','./family-v2/family.css?v=2.0.0','./family-v2/playwrite-es.ttf','./family-v2/OFL.txt',
   './',
   './index.html',
