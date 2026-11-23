@@ -51,9 +51,9 @@ function worker(options = {}) {
     let skipped = false, installed = [];
     const sandbox = {URL, self: {registration: {scope}, addEventListener: (name, handler) => events[name] = handler,
         skipWaiting: () => {skipped = true; return Promise.resolve();}, clients: {claim: () => Promise.resolve()}},
-        caches: {keys: () => Promise.resolve(['other-game-sentinel', 'burbujas-old', 'burbujas-v2.0.0-shell2']),
+        caches: {keys: () => Promise.resolve(['other-game-sentinel', 'burbujas-old', 'burbujas-v2.0.0-refinement1']),
             delete: name => {deleted.push(name); return Promise.resolve(true);},
-            open: name => {assert.equal(name, 'burbujas-v2.0.0-shell2');return Promise.resolve({
+            open: name => {assert.equal(name, 'burbujas-v2.0.0-refinement1');return Promise.resolve({
                 addAll: urls => {installed = Array.from(urls);return options.failedGate ? Promise.reject(Error('gate unavailable')) : Promise.resolve();},
                 match: request => Promise.resolve(cache.get(new URL(typeof request === 'string' ? request : request.url, scope).href)),
                 put: () => {throw Error('Do not mix newer online resources into the installed cache');}

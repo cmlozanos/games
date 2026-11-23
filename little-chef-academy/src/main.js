@@ -144,6 +144,8 @@ const particleLayer = new THREE.Group();
 scene.add(world, itemLayer, particleLayer);
 
 const materials = createMaterials();
+const appearanceLights = {};
+const windowSkies = [];
 let chef = createChef();
 const pot = createCookingPot();
 const steam = createSteamParticles();
@@ -152,6 +154,8 @@ world.add(chef, pot, steam);
 buildKitchen();
 buildDecorations();
 buildLighting();
+applyNativeAppearance();
+window.addEventListener('familyv2:appearance', applyNativeAppearance);
 
 languageSelect.value = state.locale;
 applyTranslations();
@@ -384,7 +388,12 @@ function isPositionBlocked(x, z) {
   ));
 }
 
+function decorativeMotionAllowed() {
+  return window.FamilyV2 && FamilyV2.motionAllowed ? FamilyV2.motionAllowed() : !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 function updateItems(elapsed) {
+  if (!decorativeMotionAllowed()) return;
   state.itemMeshes.forEach((entry, index) => {
     if (entry.item.collected) return;
     const bob = Math.sin(elapsed * 2.4 + index) * 0.12;
@@ -440,6 +449,8 @@ function updateCamera(delta) {
 }
 
 function updateSteam(elapsed) {
+  steam.visible = decorativeMotionAllowed();
+  if (!steam.visible) return;
   steam.children.forEach((puff, index) => {
     puff.position.y = 1.25 + ((elapsed * 0.35 + index * 0.22) % 1.4);
     puff.position.x = Math.sin(elapsed + index) * 0.12;
@@ -533,15 +544,26 @@ function showFinalSummary() {
 }
 
 function createMaterials() {
+  const grain = document.createElement('canvas');
+  grain.width = grain.height = 128;
+  const paint = grain.getContext('2d');
+  paint.fillStyle = '#e6ba85'; paint.fillRect(0, 0, 128, 128);
+  for (let i = 0; i < 32; i++) {
+    paint.strokeStyle = i % 3 ? '#b9844a' : '#f6d5a1';
+    paint.globalAlpha = 0.25; paint.beginPath();
+    paint.moveTo(0, i * 4); paint.bezierCurveTo(40, i * 4 - 4, 88, i * 4 + 6, 128, i * 4); paint.stroke();
+  }
+  const woodMap = new THREE.CanvasTexture(grain);
+  woodMap.colorSpace = THREE.SRGBColorSpace;
   return {
     floorA: new THREE.MeshStandardMaterial({ color: 0xffd8a8, roughness: 0.72 }),
     floorB: new THREE.MeshStandardMaterial({ color: 0xfebf73, roughness: 0.72 }),
     wall: new THREE.MeshStandardMaterial({ color: 0xfff4df, roughness: 0.9 }),
-    wood: new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.58 }),
-    woodLight: new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.55 }),
+    wood: new THREE.MeshStandardMaterial({ color: 0xa9784f, map: woodMap, roughness: 0.58 }),
+    woodLight: new THREE.MeshStandardMaterial({ color: 0xe7bf88, map: woodMap, roughness: 0.55 }),
     counter: new THREE.MeshStandardMaterial({ color: 0xffedd5, roughness: 0.38 }),
     metal: new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.35, roughness: 0.28 }),
-    glass: new THREE.MeshPhysicalMaterial({ color: 0xbae6fd, roughness: 0.05, transmission: 0.3, transparent: true, opacity: 0.62 }),
+    glass: new THREE.MeshStandardMaterial({ color: 0xb8d9df, roughness: 0.24, metalness: 0.18 }),
     chefBlue: new THREE.MeshStandardMaterial({ color: 0x0ea5e9, roughness: 0.52 }),
     mascotShirt: new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.48 }),
     mascotCap: new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.5 }),
@@ -555,16 +577,20 @@ function createMaterials() {
 }
 
 function buildKitchen() {
-  const floor = new THREE.Group();
-  for (let x = -15; x < 15; x += 1) {
-    for (let z = -11; z < 11; z += 1) {
-      const tile = new THREE.Mesh(new THREE.BoxGeometry(0.98, 0.04, 0.98), (x + z) % 2 === 0 ? materials.floorA : materials.floorB);
-      tile.position.set(x + 0.5, -0.02, z + 0.5);
-      tile.receiveShadow = true;
-      floor.add(tile);
+  // The same 660 floor tiles, batched by finish instead of 660 draw calls.
+  const tileGeometry = new THREE.BoxGeometry(0.98, 0.04, 0.98);
+  const matrix = new THREE.Matrix4();
+  [materials.floorA, materials.floorB].forEach((material, parity) => {
+    const tiles = new THREE.InstancedMesh(tileGeometry, material, 330);
+    let index = 0;
+    for (let x = -15; x < 15; x++) for (let z = -11; z < 11; z++) {
+      if (Math.abs((x + z) % 2) !== parity) continue;
+      matrix.makeTranslation(x + 0.5, -0.02, z + 0.5);
+      tiles.setMatrixAt(index++, matrix);
     }
-  }
-  world.add(floor);
+    tiles.instanceMatrix.needsUpdate = true;
+    world.add(tiles);
+  });
 
   // Back wall
   const backWall = new THREE.Mesh(new THREE.BoxGeometry(30, 5.5, 0.25), materials.wall);
@@ -689,6 +715,7 @@ function buildDecorations() {
   createHangingLamps();
   createRecipeBoard();
   createPlants();
+  createKitchenDetails();
 }
 
 function createWindow(x, z) {
@@ -701,10 +728,14 @@ function createWindow(x, z) {
   glass.position.set(x, 2.95, z + 0.03);
   world.add(glass);
 
-  const sun = createTextSprite('☀️', 80, '#facc15', 'rgba(255,255,255,0)');
-  sun.position.set(x + 0.55, 3.18, z + 0.11);
-  sun.scale.set(0.55, 0.55, 0.55);
-  world.add(sun);
+  const sky = new THREE.Mesh(new THREE.PlaneGeometry(2.05, 1.29), new THREE.MeshBasicMaterial({color: 0xb7e1eb}));
+  sky.position.set(x, 2.95, z + 0.12);
+  const sun = new THREE.Mesh(new THREE.CircleGeometry(0.19, 16), new THREE.MeshBasicMaterial({color: 0xffe4a1}));
+  sun.position.set(x + 0.55, 3.18, z + 0.14);
+  world.add(sky, sun);
+  windowSkies.push({sky, sun});
+  const mullion = new THREE.Mesh(new THREE.BoxGeometry(0.07, 1.35, 0.04), materials.chefWhite);
+  mullion.position.set(x, 2.95, z + 0.16); world.add(mullion);
 }
 
 function createShelf(x, z, emojis) {
@@ -764,24 +795,66 @@ function createPlants() {
   });
 }
 
-function buildLighting() {
-  scene.add(new THREE.HemisphereLight(0xfff7ed, 0xf97316, 1.5));
-  const key = new THREE.DirectionalLight(0xffffff, 2.3);
-  key.position.set(-4, 8, 5);
-  key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
-  key.shadow.camera.near = 0.5;
-  key.shadow.camera.far = 30;
-  key.shadow.camera.left = -16;
-  key.shadow.camera.right = 16;
-  key.shadow.camera.top = 16;
-  key.shadow.camera.bottom = -16;
-  scene.add(key);
+function createKitchenDetails() {
+  // Fixed props stay on existing worktops: no new collision or collection zones.
+  const trim = new THREE.Mesh(new THREE.BoxGeometry(27.8, 0.12, 0.12), materials.wood);
+  trim.position.set(0, 1.45, -9.95); world.add(trim);
+  [-5.5, 5.5].forEach(x => {
+    const board = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.07, 0.72), materials.wood);
+    board.position.set(x, 1.14, 3.8); world.add(board);
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.29, 0.26, 0.055, 24), materials.chefWhite);
+    plate.position.set(x + 0.65, 1.15, 3.7); world.add(plate);
+    const tomato = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 8), new THREE.MeshStandardMaterial({color:0xd84c38,roughness:0.35}));
+    tomato.position.set(x - 0.2, 1.34, 3.8); world.add(tomato);
+    const stem = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.1, 5), materials.mascotCap);
+    stem.position.set(x - 0.2, 1.51, 3.8); world.add(stem);
+  });
+  [-1.5, -6.5].forEach(z => {
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(3.3, 0.06, 0.06), materials.metal);
+    rail.position.set(0, 0.65, z + 0.94); world.add(rail);
+    [-1.35, 1.35].forEach(x => {
+      const mount = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.08, 0.12), materials.metal);
+      mount.position.set(x, 0.65, z + 0.89); world.add(mount);
+    });
+  });
+}
 
-  const warm = new THREE.PointLight(0xffb86b, 65, 12, 2);
-  warm.position.set(0, 3.3, -0.7);
-  warm.castShadow = true;
-  scene.add(warm);
+function buildLighting() {
+  appearanceLights.fill = new THREE.HemisphereLight(0xfff7ed, 0x936343, 1.5);
+  appearanceLights.key = new THREE.DirectionalLight(0xfff2da, 2.3);
+  appearanceLights.key.position.set(-4, 8, 5);
+  appearanceLights.warm = new THREE.PointLight(0xffbd80, 45, 12, 2);
+  appearanceLights.warm.position.set(0, 3.3, -0.7);
+  scene.add(appearanceLights.fill, appearanceLights.key, appearanceLights.warm);
+}
+
+function applyNativeAppearance() {
+  const dark = window.FamilyV2 && FamilyV2.theme ? FamilyV2.theme() === 'dark' : document.documentElement.dataset.familyTheme === 'dark';
+  scene.background.set(dark ? 0x17283d : 0xfff1d6);
+  materials.wall.color.set(dark ? 0x647486 : 0xfff4df);
+  materials.floorA.color.set(dark ? 0x9e9d9d : 0xffdfba);
+  materials.floorB.color.set(dark ? 0x7d8d98 : 0xe4ba8b);
+  appearanceLights.fill.color.set(dark ? 0x9dbce5 : 0xfff7ed);
+  appearanceLights.fill.intensity = dark ? 1.1 : 1.5;
+  appearanceLights.key.color.set(dark ? 0xb2ceff : 0xfff2da);
+  appearanceLights.key.intensity = dark ? 1.5 : 2.3;
+  appearanceLights.warm.intensity = dark ? 60 : 45;
+  windowSkies.forEach(({sky, sun}) => {
+    sky.material.color.set(dark ? 0x193350 : 0xb7e1eb);
+    sun.material.color.set(dark ? 0xe2edff : 0xffe4a1);
+  });
+  steam.visible = decorativeMotionAllowed();
+  if (!decorativeMotionAllowed()) {
+    state.itemMeshes.forEach(entry => {
+      entry.group.position.y = entry.baseY; entry.group.rotation.y = 0;
+      entry.arrow.position.y = 1.65; entry.arrow.material.opacity = 1;
+      entry.beam.material.opacity = 0.18;
+    });
+    [...state.particles, ...state.tosses].forEach(effect => {
+      particleLayer.remove(effect.mesh); effect.mesh.geometry.dispose(); effect.mesh.material.dispose();
+    });
+    state.particles = []; state.tosses = [];
+  }
 }
 
 function createChef() {
@@ -980,6 +1053,7 @@ function animateChefWalk(elapsed) {
 }
 
 function animateChefIdle(elapsed) {
+  if (!decorativeMotionAllowed()) elapsed = 0;
   chef.userData.leftArm.rotation.x = Math.sin(elapsed * 2) * 0.08;
   chef.userData.rightArm.rotation.x = -Math.sin(elapsed * 2) * 0.08;
   chef.userData.leftLeg.rotation.x = 0;
@@ -1174,6 +1248,7 @@ function pulseWrongItem(item) {
 }
 
 function spawnSparkles(position, color) {
+  if (!decorativeMotionAllowed()) return;
   for (let i = 0; i < 18; i += 1) {
     const mesh = new THREE.Mesh(
       new THREE.SphereGeometry(0.045 + Math.random() * 0.035, 8, 6),
@@ -1189,6 +1264,7 @@ function spawnSparkles(position, color) {
 }
 
 function tossToPot(position, color) {
+  if (!decorativeMotionAllowed()) return;
   const mesh = new THREE.Mesh(
     new THREE.SphereGeometry(0.08, 10, 8),
     new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.8 })
@@ -1333,22 +1409,27 @@ function createTextSprite(text, size = 64, color = '#111827', background = 'rgba
   textureCanvas.width = canvasSize;
   textureCanvas.height = canvasSize;
   const ctx = textureCanvas.getContext('2d');
-  ctx.clearRect(0, 0, canvasSize, canvasSize);
-  if (background !== 'rgba(255,255,255,0)' && background !== 'transparent') {
-    ctx.fillStyle = background;
-    roundedRect(ctx, canvasSize * 0.07, canvasSize * 0.07, canvasSize * 0.86, canvasSize * 0.86, canvasSize * 0.188);
-    ctx.fill();
-  }
-  ctx.fillStyle = color;
-  ctx.font = `400 ${size}px "Family School", cursive`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(text, canvasSize / 2, canvasSize / 2 + canvasSize * 0.051);
+  function paintText() {
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+    if (background !== 'rgba(255,255,255,0)' && background !== 'transparent') {
+      ctx.fillStyle = background;
+      roundedRect(ctx, canvasSize * 0.07, canvasSize * 0.07, canvasSize * 0.86, canvasSize * 0.86, canvasSize * 0.188);
+      ctx.fill();
+    }
+    ctx.fillStyle = color;
+    ctx.font = `400 ${size}px "${window.FamilyV2 ? FamilyV2.fontFamily : 'Family School'}", cursive`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, canvasSize / 2, canvasSize / 2 + canvasSize * 0.051);
 
+  }
+  paintText();
   const texture = new THREE.CanvasTexture(textureCanvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
-  return new THREE.Sprite(material);
+  const sprite = new THREE.Sprite(material);
+  sprite.userData.refreshText = () => { paintText(); texture.needsUpdate = true; };
+  return sprite;
 }
 
 function roundedRect(ctx, x, y, width, height, radius) {
@@ -1462,6 +1543,6 @@ function clamp(value, min, max) {
 function registerFamilyV2() {
   if(!window.FamilyV2)return;
   FamilyV2.register({home(){showMenu();},pause(){familyWasPaused=state.paused;familyFrozen=true;state.keys.clear();gameTimers.pause();activeAudio.forEach(ctx=>ctx.close().catch(()=>{}));activeAudio.clear();if(window.speechSynthesis)speechSynthesis.cancel();},resume(){familyFrozen=false;state.paused=familyWasPaused;clock.getDelta();if(!educationLocked)gameTimers.resume();}});
-  FamilyV2.fontReady.then(()=>{rebuildItemLabels();});
+  FamilyV2.fontReady.then(()=>{scene.traverse(node => { if(node.userData.refreshText) node.userData.refreshText(); });});
 }
 document.addEventListener('DOMContentLoaded',registerFamilyV2);registerFamilyV2();

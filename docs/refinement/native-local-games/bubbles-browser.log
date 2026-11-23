@@ -1,0 +1,6 @@
+node tools/browser-check.cjs
+modern 360x740: defaults, touch, layout, cached board/sprites, idle sleep, keyboard, pause/gate, one RAF, persistence and offline OK
+modern 1024x768: defaults, touch, layout, cached board/sprites OK
+modern 844x390: defaults, touch, layout, cached board/sprites OK
+modern: real shot -> won, result controls and next level OK (response fixture only)
+modern: real shot -> lost, result controls and retry OK (response fixture only)

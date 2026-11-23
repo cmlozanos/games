@@ -1,0 +1,10 @@
+Running 8 tests using 1 worker
+[1/8] tests/native-refinement.spec.cjs:36:69 › little-chef-academy native theme/motion/font 1024x768
+[2/8] tests/native-refinement.spec.cjs:36:69 › burbujas native theme/motion/font 1024x768
+[3/8] tests/native-refinement.spec.cjs:36:69 › buscaminas native theme/motion/font 1024x768
+[4/8] tests/native-refinement.spec.cjs:36:69 › little-chef-academy native theme/motion/font 960x540
+[5/8] tests/native-refinement.spec.cjs:36:69 › burbujas native theme/motion/font 960x540
+[6/8] tests/native-refinement.spec.cjs:36:69 › buscaminas native theme/motion/font 960x540
+[7/8] tests/native-refinement.spec.cjs:83:1 › Bubbles suppresses optional effects without changing required projectile
+[8/8] tests/native-refinement.spec.cjs:92:1 › real shared appearance controls reach native Chef and Bubbles
+  8 passed (1.1m)

@@ -1,0 +1,3 @@
+Running 1 test using 1 worker
+[1/1] tests/native-refinement.spec.cjs:92:1 › real shared appearance controls reach all three native games
+  1 passed (9.1s)

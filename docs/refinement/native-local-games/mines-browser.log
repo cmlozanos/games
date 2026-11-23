@@ -1,0 +1,7 @@
+node tools/browser-check.cjs
+Browser 151.0.7922.34
+PASS 1280x800 gate/layout/touch/keyboard/rotation/win/loss/retry/10min/state/offline/audio/idle/reading
+PASS 800x1280 gate/layout/touch/keyboard/rotation/win/loss/retry/10min/state/offline
+PASS 320x640 gate/layout/touch/keyboard/rotation/win/loss/retry/10min/state/offline
+PASS 740x360 gate/layout/touch/keyboard/rotation/win/loss/retry/10min/state/offline
+PASS missing educational gate fails closed

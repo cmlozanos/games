@@ -1,0 +1,31 @@
+node tools/sync-learning-gate.mjs --check
+burbujas: verified profile, gate, 100 words/images and local offline loading (935825 image bytes)
+little-chef-academy: verified profile, gate, 100 words/images and local offline loading (935825 image bytes)
+buscaminas: verified profile, gate, 100 words/images and local offline loading (935825 image bytes)
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -C little-chef-academy check
+node --check src/main.js
+node --check learning-gate.js
+node --check sw.js
+node tools/check.mjs
+Chef: assets, cache isolation, navigation and legacy CSS verified
+Chef: real keyboard/touch handlers release held input on blur and hidden document
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -C burbujas check
+node tools/core-check.cjs
+PASS Burbujas: UMD/MIT, deterministic levels, hex grid, continuous collision, adjacent/full snap, groups, immediate floating/win, ceiling/loss, bounce/aim, live colours, 10–120FPS and bounded ticks
+node tools/check.cjs
+PASS Burbujas syntax, gate, licenses, PWA icons, exact-version cache, isolation and failed-install safety
+/Applications/Xcode.app/Contents/Developer/usr/bin/make -C buscaminas check
+node tools/sync-learning-gate.mjs --check
+.: verified profile, gate, 100 words/images and local offline loading (935825 image bytes)
+node tools/core-check.cjs
+PASS Buscaminas: UMD/MIT, 4000 deterministic boards (2002 wins, 1998 losses), both profiles/rectangles, 3x3 first safety, counts, neighbours, iterative flood, flags, terminal lock and invalid inputs.
+node tools/check.cjs
+PASS syntax, MIT provenance, PWA/icon/cache isolation, 100 offline images, failed-install safety; runtime 81437 bytes
+node --check tests/catalogue-chef.spec.cjs
+node --check learning-profile.js
+node --check profiles.js
+node --check tests/profile-settings.spec.cjs
+node tools/verify-v2.cjs
+burbujas:V2 local offline kit verified
+buscaminas:V2 local offline kit verified
+little-chef-academy:V2 local offline kit verified

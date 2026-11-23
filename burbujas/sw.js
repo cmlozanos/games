@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME = 'burbujas-v2.0.0-shell2';
+const CACHE_NAME = 'burbujas-v2.0.0-refinement1';
 const PRECACHE_URLS = ['./family-v2/family.js?v=2.0.0','./family-v2/family.css?v=2.0.0','./family-v2/playwrite-es.ttf','./family-v2/OFL.txt',
     './',
     './index.html',

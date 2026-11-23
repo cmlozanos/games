@@ -20,7 +20,7 @@ body {
   margin: 0;
   min-height: 100vh;
   min-height: 100dvh;
-  font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Family School", cursive;
   color: var(--ink);
   background:
     radial-gradient(circle at 18% 20%, rgba(250, 204, 21, 0.42), transparent 22rem),
@@ -1023,3 +1023,12 @@ html.family-v2 .hero-card>p,html.family-v2 .mode-panel>p{display:none}
 .family-shell-slot{position:fixed;top:6px;right:8px;z-index:90}#menu-screen .top-row{padding-right:195px}#game-screen .hud-top{padding-right:195px}@media(max-width:600px){.family-shell-slot{top:4px;right:5px}#game-screen .hud-top{padding-top:54px;padding-right:0}#menu-screen .top-row{padding-top:52px;padding-right:0}}
 
 #game-screen .game-hud{padding-right:210px}@media(max-width:600px){#game-screen .game-hud{padding-top:60px;padding-right:12px}}
+
+html.family-no-motion *,html.family-no-motion *::before,html.family-no-motion *::after { transition: none !important; animation: none !important; }
+
+/* Opaque night HUD keeps linked lettering legible over the cool kitchen. */
+html[data-family-theme=dark] #game-screen .game-hud,
+html[data-family-theme=dark] #game-screen .instruction-card,
+html[data-family-theme=dark] #game-screen .hint-bar { background: #24334b; border-color: #71829b; color: #edf2ff; }
+html[data-family-theme=dark] #game-screen #instruction-label { color: #ffd3a3; }
+html[data-family-theme=dark] .mode-button { background: linear-gradient(180deg, #34445b, #26364b); }

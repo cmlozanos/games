@@ -1,7 +1,7 @@
 :root { color-scheme: light; --ink: #233d3a; --muted: #596d68; --paper: #f6f8f2; --green: #256456; --tile-gap: 6px; }
 * { box-sizing: border-box; }
 html { min-width: 320px; background: var(--paper); }
-body { margin: 0; color: var(--ink); background: var(--paper); font-family: ui-rounded, "Avenir Next", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+body { margin: 0; color: var(--ink); background: var(--paper); font-family: "Family School", cursive; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 input, textarea, select, [contenteditable]:not([contenteditable="false"]) { -webkit-touch-callout: default; -webkit-user-select: text; user-select: text; }
 button, a { touch-action: manipulation; }
 button { font: inherit; cursor: pointer; }
@@ -39,7 +39,7 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .board-frame { width: calc(100% + 8px); max-width: calc(100% + 8px); overflow-x: auto; overflow-y: hidden; padding: 4px; margin: -4px; scrollbar-width: thin; scrollbar-color: #99b6a7 #edf2e9; overscroll-behavior-x: contain; }
 .board { --columns: 6; display: flex; flex-direction: column; gap: var(--tile-gap); width: 100%; min-width: calc(var(--columns) * 44px + (var(--columns) - 1) * var(--tile-gap)); }
 .board-row { display: grid; grid-template-columns: repeat(var(--columns), minmax(44px, 1fr)); gap: var(--tile-gap); }
-.cell { position: relative; display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; aspect-ratio: 1; padding: 0; border: 1px solid #abd0c4; border-bottom: 3px solid #86b5a6; border-radius: 11px; background: #d3eadf; color: var(--ink); font: 800 clamp(22px, 4.5vw, 30px)/1 ui-rounded, system-ui, sans-serif; }
+.cell { position: relative; display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; aspect-ratio: 1; padding: 0; border: 1px solid #abd0c4; border-bottom: 3px solid #86b5a6; border-radius: 11px; background: #d3eadf; color: var(--ink); font: 800 clamp(22px, 4.5vw, 30px)/1 "Family School", cursive; }
 .cell:focus-visible { z-index: 1; outline-offset: 0; }
 .cell svg { width: 27px; height: 27px; stroke-width: 2.2; }
 .cell.is-revealed { background: #f0f3eb; border: 1px solid #e1e8d9; }
@@ -152,3 +152,52 @@ body{min-height:0;height:var(--family-height,100vh)}.toolbar [data-family-slot]{
 .family-menu{display:grid;place-content:center;justify-items:center;gap:20px;min-height:50vh}.family-menu button{width:90px;height:70px;background:var(--family-button);border:0;border-radius:20px;font-size:32px;color:var(--family-ink)}
 
 @media(max-width:600px){.toolbar .brand{display:none}.toolbar{gap:6px}.toolbar [data-family-slot]{margin-left:auto}.toolbar #home-link{flex:0 0 44px}}
+
+/* Crafted ceramic pieces in a recessed walnut tray. Counts stay untextured. */
+.board-card {
+  background: linear-gradient(135deg, #e0bd90, #ac7d52);
+  border-color: #99724f;
+  box-shadow: inset 0 1px 0 #fff4dc, 0 5px 0 #805c40;
+}
+.board-info { color: #302d28; }
+.board-info .safe-metric { color: #3f433a; }
+.board { background: #9d856b; border-radius: 12px; padding: 5px; }
+.cell {
+  background: linear-gradient(150deg, #e7f5e7, #a9cfbb);
+  border-color: #99bba7; border-bottom-color: #759c87;
+  box-shadow: inset 0 2px 0 #f4fff0, inset 1px 0 0 #edfae8, 0 2px 1px #493c3933;
+}
+.cell.is-revealed {
+  background: #f4f1e5; border-color: #ddd5bf;
+  box-shadow: inset 0 1px 2px #71654c22;
+}
+.cell.is-flagged { background: linear-gradient(145deg, #f3eafa, #d1bcdf); }
+.cell.is-mine { background: #f5e1cf; }
+.cell.is-exploded { background: #f5c6ad; }
+html[data-family-theme=dark] .board-card {
+  background: linear-gradient(135deg, #65564d, #403a39); border-color: #8d7b69;
+  box-shadow: inset 0 1px 0 #a4917a, 0 5px 0 #242b36;
+}
+html[data-family-theme=dark] .board { background: #242d36; }
+html[data-family-theme=dark] .board-info,
+html[data-family-theme=dark] .board-info .safe-metric { color: #eee8d9; }
+html[data-family-theme=dark] .cell {
+  background: linear-gradient(150deg, #496c69, #2e4b50); border-color: #64827d;
+  border-bottom-color: #1c343d; box-shadow: inset 0 2px 0 #77988c, 0 2px 0 #142735;
+}
+html[data-family-theme=dark] .cell.is-revealed { background: #283647; border-color: #3c4b5b; box-shadow: inset 0 1px 2px #111c2b; }
+html[data-family-theme=dark] .cell.is-empty::after { background: #718496; }
+html[data-family-theme=dark] .cell.is-flagged { background: linear-gradient(145deg, #66557f, #493f64); color: #f1dbff; }
+html[data-family-theme=dark] .cell.is-mine { background: #62483f; color: #ffe3bc; }
+html[data-family-theme=dark] .cell.is-exploded { background: #793f35; color: #fff0d5; }
+html[data-family-theme=dark] .cell[data-number="1"] { color: #96cbff; }
+html[data-family-theme=dark] .cell[data-number="2"] { color: #a0dfa3; }
+html[data-family-theme=dark] .cell[data-number="3"] { color: #ffad97; }
+html[data-family-theme=dark] .cell[data-number="4"] { color: #cdb1ff; }
+html[data-family-theme=dark] .cell[data-number="5"] { color: #f8c491; }
+html[data-family-theme=dark] .cell[data-number="6"] { color: #90e3dd; }
+html[data-family-theme=dark] .cell[data-number="7"] { color: #ffabd2; }
+html[data-family-theme=dark] .cell[data-number="8"] { color: #e1e8ee; }
+html.family-no-motion .icon-button:active,
+html.family-no-motion .action-button:active,
+html.family-no-motion .mode-button:active { transform: none; }

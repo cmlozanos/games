@@ -93,6 +93,7 @@
   $('next').onclick=function(){level=Math.min(100000,level+1);start();};
   $('quality').onclick=function(){light=!light;write(SAVE_LIGHT,String(light));renderer.quality(light);updateHud();draw();};
   $('sound').onclick=function(){sound=!sound;updateHud();if(sound&&!audio){try{var Audio=window.AudioContext||window.webkitAudioContext;if(Audio)audio=new Audio();}catch(_){}}tone('pop');setAudioActive();};
+  window.addEventListener('familyv2:appearance',function(){draw();schedule();});
   document.addEventListener('visibilitychange',sync);
   window.addEventListener('pagehide',stop);
   window.addEventListener('pageshow',sync);

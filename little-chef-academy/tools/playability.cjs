@@ -148,7 +148,9 @@ async function solveGate(page) {
     assert.equal(completed.points,wrong.before.points+1,'one family point per completed round');
     console.log('PASS count: spawn (0,8.5) -> 3 tomatoes -> completed, without teleport/force win');
     assert.match(completed.progress,/3\/3/,'completion HUD must show final count');
-    await page.getByRole('button',{name:'Para adultos',exact:true}).click();
+    // No animation/actionability wait: the native summary deadline is only 800ms.
+    // Dispatch the real adult-button handler before that deadline in this fixed-clock fixture.
+    await page.getByRole('button',{name:'Para adultos',exact:true}).dispatchEvent('click');
     await page.waitForTimeout(950);
     assert.equal((await snapshot(page)).summary,false,'adult lock must freeze pending round summary');
     assert.equal((await snapshot(page)).stars,3);
